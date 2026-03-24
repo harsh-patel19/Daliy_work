@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+</head>
+<body>
+
+    <h2>Add Product</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label>Name:</label>
+        <input type="text" name="name" required><br><br>
+
+        <label>Price:</label>
+        <input type="number" name="price"><br><br>
+
+        <label>Quantity:</label>
+        <input type="number" name="qty" required><br><br>
+
+        <button type="submit">Add Product</button>
+    </form>
+
+    <hr>
+
+    <h2>Product List</h2>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Action</th>
+        </tr>
+
+        {% for p in Products %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.price }}</td>
+            <td>{{ p.qty }}</td>
+            <td>
+                <a href="{% url 'product_update' p.id %}">Edit</a> 
+                <a href="{% url 'product_delete' p.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</body>
+</html>

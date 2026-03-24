@@ -1,0 +1,44 @@
+<h2>STUDENT LIST</h2>
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+    Name:  <input type="text" name="name"><br><br>
+    Email: <input type="text" name="email"><br><br>
+    Age:   <input type="tel" name="age"><br><br>
+    Image: <input type="file" name="image"><br><br>
+
+    <button type="submit">Add</button>
+</form>
+
+<h2 align="center">Students List</h2>
+
+<table align="center" border="1">
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Age</th>
+    <th>Image</th>
+    <th>Action</th>
+</tr>
+
+{% for s in Students %}
+<tr>
+    <td>{{ s.name }}</td>
+    <td>{{ s.email }}</td>
+    <td>{{ s.age }}</td>
+
+    <td>
+        {% if s.image %}
+            <img src="{{ s.image.url }}" width="100">
+        {% else %}
+            No Photo
+        {% endif %}
+    </td>
+
+    <td>
+        <a href="{% url 'student_update' s.id %}">Edit</a>
+        <a href="{% url 'student_delete' s.id %}">Delete</a>
+    </td>
+</tr>
+{% endfor %}
+</table>

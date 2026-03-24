@@ -1,0 +1,48 @@
+<h2>ADD StudentsDENT</h2>
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+    Name: <input type="text" name="name"><br><br>
+    Email:  <input type="text" name="email"><br><br>
+    Coruse: <input type="text" name="course"><br><br>
+    image: <input type="file" name="image"><br><br>
+    <button type="submit">Add</button>
+</form>
+
+<hr>
+
+<h2 align="center">StudentsDENT LIST</h2>
+
+<table align="center" border="5">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Course</th>
+        <th>Image</th>
+        <th>Action</th>
+    </tr>
+
+    {% for Students in stu %}
+    <tr>
+
+        <td>{{Students.name}}</td>
+        <td>{{Students.email}}</td>
+        <td>{{Students.course}}</td>
+
+        <td>
+            {% if Students.image %}
+                <img src="{{Students.image.url}}" width="100">
+            {% else %}
+                No Photo
+            {% endif %}
+        </td>
+
+        <td>
+            <a href="{% url 'Students_update' stu.id %}">Edit</a>
+            <a href="{% url 'Students_delete' stu.id %}">Delete</a>
+        </td>
+
+    </tr>
+    {% endfor %}
+
+</table>

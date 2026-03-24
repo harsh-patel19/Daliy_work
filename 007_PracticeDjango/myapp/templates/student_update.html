@@ -1,0 +1,20 @@
+<h2>UPDATE STUDENT</h2>
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+    Name: <input type="text" name="name" value="{{ student.name }}"><br><br>
+
+    Email: <input type="text" name="email" value="{{ student.email }}"><br><br>
+
+    Age: <input type="tel" name="age" value="{{ student.age }}"><br><br>
+
+    {% if student.image %}
+        <img src="{{ student.image.url }}" width="100"><br><br>
+    {% endif %}
+
+    Change Photo: <input type="file" name="image"><br><br>
+
+    <button type="submit">UPDATE</button>
+
+</form>

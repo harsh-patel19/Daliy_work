@@ -1,0 +1,16 @@
+<h2>UPDATE PRODUCT</h2>
+
+<form method="post"  enctype="multipart/form-data">
+    {%csrf_token%}
+
+    Name: <input type="text" name="name" value="{{Products.name}}"><br><br>
+    Age:  <input type="number" name="age" value="{{Products.age}}"><br><br>
+
+    {% if Products.photo %}
+        <img src="{{ Products.photo.url }}" width="100"><br><br>
+    {%endif%}
+
+    change photo: <input type="file" name="photo"><br><br>
+
+    <button type="submit">UPDATE</button>
+</form>

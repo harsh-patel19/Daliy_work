@@ -1,0 +1,13 @@
+<h2>REGISTER</h2>
+
+<form method="post">
+    {%csrf_token%}
+
+        Username:<input type="text" name="username"><br><br>
+        Password:<input type="password" name="password"><br><br>
+
+        <button type="submit">REGISTER</button>
+
+</form>
+
+<a href="{%url 'login' %}">login</a>
