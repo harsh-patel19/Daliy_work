@@ -64,3 +64,10 @@ class StudentDetails(APIView):
         Students = get_object_or_404(Student,pk=pk)
         Students.delete()
         return Response("student deleted")
+
+
+
+
+
+
+
