@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patients — MediCore HMS</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon"><i class="fas fa-hospital-user"></i></div><h2>MediCore HMS</h2><span>Hospital Management</span></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Main</div>
+    <a href="dashboard.html"    class="nav-item"><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <a href="patients.html"     class="nav-item active"><i class="fas fa-user-injured"></i> Patients <span class="nav-badge">12</span></a>
+    <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check"></i> Appointments</a>
+    <a href="doctors.html"      class="nav-item"><i class="fas fa-user-md"></i> Doctors</a>
+    <a href="wards.html"        class="nav-item"><i class="fas fa-bed"></i> Wards & Beds</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Clinical</div>
+    <a href="pharmacy.html"   class="nav-item"><i class="fas fa-pills"></i> Pharmacy</a>
+    <a href="laboratory.html" class="nav-item"><i class="fas fa-flask"></i> Laboratory <span class="nav-badge green">5</span></a>
+    <a href="billing.html"    class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Billing</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Admin</div>
+    <a href="reports.html"  class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="sidebar-user"><div class="user-avatar">DR</div><div class="user-info"><h4>Dr. Rahul Mehta</h4><span>Chief Medical Officer</span></div><i class="fas fa-chevron-right user-chevron"></i></div>
+  </div>
+</aside>
+
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="topbar-brand">MediCore <span>HMS</span></div>
+    <div class="topbar-search"><i class="fas fa-search"></i><input type="text" placeholder="Search patients, doctors…"></div>
+    <div class="topbar-right">
+      <div class="date-badge"><i class="far fa-calendar-alt" style="margin-right:6px"></i><span id="topbar-date"></span></div>
+      <div class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="dot"></span></div>
+      <div class="topbar-icon-btn"><i class="fas fa-envelope"></i></div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Patient Records</h1>
+      <p>Manage all patient profiles, history, and treatment records</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card blue"><div class="stat-icon blue"><i class="fas fa-users"></i></div><div class="stat-label">Total Registered</div><div class="stat-value">1,284</div><div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 8.4% this month</div></div>
+      <div class="stat-card teal"><div class="stat-icon teal"><i class="fas fa-procedures"></i></div><div class="stat-label">Currently Admitted</div><div class="stat-value">262</div><div class="stat-trend" style="color:var(--text-muted)">Across all wards</div></div>
+      <div class="stat-card orange"><div class="stat-icon orange"><i class="fas fa-stethoscope"></i></div><div class="stat-label">OPD Patients</div><div class="stat-value">148</div><div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> Today</div></div>
+      <div class="stat-card red"><div class="stat-icon red"><i class="fas fa-sign-out-alt"></i></div><div class="stat-label">Discharged Today</div><div class="stat-value">19</div><div class="stat-trend" style="color:var(--text-muted)">Recovery complete</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">All Patients</div><div class="card-subtitle">1,284 registered patients</div></div>
+        <button class="btn-sm btn-primary" onclick="openModal('modal-add-patient')"><i class="fas fa-plus"></i> Add Patient</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar">
+        <input type="text" placeholder="Search by name, ID, phone…">
+        <select><option>All Departments</option><option>Cardiology</option><option>Orthopaedics</option><option>General</option><option>Paediatrics</option><option>Gynaecology</option><option>Neurology</option></select>
+        <select><option>All Status</option><option>Admitted</option><option>OPD</option><option>Discharged</option></select>
+        <select><option>All Blood Groups</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+        <div class="filter-bar-right"><button class="btn-sm btn-outline"><i class="fas fa-download"></i> Export</button></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Patient</th><th>ID</th><th>Age / Gender</th><th>Blood Group</th><th>Department</th><th>Doctor</th><th>Admission</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px"><div class="patient-avatar" style="background:#e3f2fd;color:#1565C0">PS</div><div class="patient-info"><h4>Priya Sharma</h4><span>priya.sharma@email.com</span></div></div></td>
+              <td><code style="font-size:0.75rem;background:var(--bg);padding:3px 8px;border-radius:5px">P-1042</code></td>
+              <td>34 / F</td><td><span class="badge badge-red">B+</span></td>
+              <td>Cardiology</td><td>Dr. Anita Patel</td><td>15 Mar 2025</td>
+              <td><span class="badge badge-blue">Admitted</span></td>
+              <td><button class="action-btn action-view" title="View"><i class="fas fa-eye"></i></button><button class="action-btn action-edit" title="Edit"><i class="fas fa-pen"></i></button><button class="action-btn action-delete" title="Delete"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px"><div class="patient-avatar" style="background:#e0f2f1;color:#00897B">RK</div><div class="patient-info"><h4>Rajesh Kumar</h4><span>rajesh.k@email.com</span></div></div></td>
+              <td><code style="font-size:0.75rem;background:var(--bg);padding:3px 8px;border-radius:5px">P-1041</code></td>
+              <td>58 / M</td><td><span class="badge badge-orange">O+</span></td>
+              <td>Cardiology</td><td>Dr. Suresh Iyer</td><td>14 Mar 2025</td>
+              <td><span class="badge badge-orange">OPD</span></td>
+              <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button><button class="action-btn action-delete"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px"><div class="patient-avatar" style="background:#fff3e0;color:#F57C00">FS</div><div class="patient-info"><h4>Fatima Shaikh</h4><span>fatima.s@email.com</span></div></div></td>
+              <td><code style="font-size:0.75rem;background:var(--bg);padding:3px 8px;border-radius:5px">P-1040</code></td>
+              <td>29 / F</td><td><span class="badge badge-blue">A+</span></td>
+              <td>Orthopaedics</td><td>Dr. Vikram Nair</td><td>10 Mar 2025</td>
+              <td><span class="badge badge-blue">Admitted</span></td>
+              <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button><button class="action-btn action-delete"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px"><div class="patient-avatar" style="background:#fce4ec;color:#C62828">AV</div><div class="patient-info"><h4>Arjun Verma</h4><span>arjun.v@email.com</span></div></div></td>
+              <td><code style="font-size:0.75rem;background:var(--bg);padding:3px 8px;border-radius:5px">P-1039</code></td>
+              <td>45 / M</td><td><span class="badge badge-gray">AB-</span></td>
+              <td>General Surgery</td><td>Dr. Meena Rao</td><td>8 Mar 2025</td>
+              <td><span class="badge badge-green">Discharged</span></td>
+              <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button><button class="action-btn action-delete"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px"><div class="patient-avatar" style="background:#f3e5f5;color:#7b1fa2">SG</div><div class="patient-info"><h4>Sunita Gupta</h4><span>sunita.g@email.com</span></div></div></td>
+              <td><code style="font-size:0.75rem;background:var(--bg);padding:3px 8px;border-radius:5px">P-1038</code></td>
+              <td>32 / F</td><td><span class="badge badge-red">B-</span></td>
+              <td>Gynaecology</td><td>Dr. Kavitha Menon</td><td>5 Mar 2025</td>
+              <td><span class="badge badge-orange">OPD</span></td>
+              <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button><button class="action-btn action-delete"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:10px"><div class="patient-avatar" style="background:#e8f5e9;color:#2e7d32">MD</div><div class="patient-info"><h4>Mohan Das</h4><span>mohan.d@email.com</span></div></div></td>
+              <td><code style="font-size:0.75rem;background:var(--bg);padding:3px 8px;border-radius:5px">P-1037</code></td>
+              <td>67 / M</td><td><span class="badge badge-blue">O-</span></td>
+              <td>Neurology</td><td>Dr. Ramesh Shah</td><td>1 Mar 2025</td>
+              <td><span class="badge badge-blue">Admitted</span></td>
+              <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button><button class="action-btn action-delete"><i class="fas fa-trash"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <span>Showing 1–6 of 1,284 patients</span>
+        <div class="page-btns">
+          <button class="page-btn">← Prev</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">…</button>
+          <button class="page-btn">214</button>
+          <button class="page-btn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PATIENT MODAL -->
+<div class="modal-overlay" id="modal-add-patient">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Register New Patient</h2>
+      <button class="modal-close" onclick="closeModal('modal-add-patient')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>First Name</label><input type="text" placeholder="Enter first name"></div>
+      <div class="form-group"><label>Last Name</label><input type="text" placeholder="Enter last name"></div>
+      <div class="form-group"><label>Date of Birth</label><input type="date"></div>
+      <div class="form-group"><label>Gender</label><select><option>Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+91 XXXXX XXXXX"></div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="patient@email.com"></div>
+      <div class="form-group"><label>Blood Group</label><select><option>Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+      <div class="form-group"><label>Aadhaar / ID No.</label><input type="text" placeholder="XXXX XXXX XXXX"></div>
+      <div class="form-group"><label>Department</label><select><option>Select</option><option>Cardiology</option><option>Orthopaedics</option><option>General</option><option>Paediatrics</option><option>Gynaecology</option><option>Neurology</option></select></div>
+      <div class="form-group"><label>Assigned Doctor</label><select><option>Select</option><option>Dr. Anita Patel</option><option>Dr. Suresh Iyer</option><option>Dr. Vikram Nair</option><option>Dr. Kavitha Menon</option><option>Dr. Ramesh Shah</option></select></div>
+      <div class="form-group"><label>Emergency Contact</label><input type="tel" placeholder="Contact number"></div>
+      <div class="form-group"><label>Insurance / Policy No.</label><input type="text" placeholder="Policy number (optional)"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Address</label><textarea placeholder="Full address"></textarea></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-sm btn-outline" onclick="closeModal('modal-add-patient')">Cancel</button>
+      <button class="btn-sm btn-primary"><i class="fas fa-save"></i> Register Patient</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
+</script>
+</body>
+</html>

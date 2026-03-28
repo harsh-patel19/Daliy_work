@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billing — MediCore HMS</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon"><i class="fas fa-hospital-user"></i></div><h2>MediCore HMS</h2><span>Hospital Management</span></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Main</div>
+    <a href="dashboard.html"    class="nav-item"><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <a href="patients.html"     class="nav-item"><i class="fas fa-user-injured"></i> Patients <span class="nav-badge">12</span></a>
+    <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check"></i> Appointments</a>
+    <a href="doctors.html"      class="nav-item"><i class="fas fa-user-md"></i> Doctors</a>
+    <a href="wards.html"        class="nav-item"><i class="fas fa-bed"></i> Wards & Beds</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Clinical</div>
+    <a href="pharmacy.html"   class="nav-item"><i class="fas fa-pills"></i> Pharmacy</a>
+    <a href="laboratory.html" class="nav-item"><i class="fas fa-flask"></i> Laboratory <span class="nav-badge green">5</span></a>
+    <a href="billing.html"    class="nav-item active"><i class="fas fa-file-invoice-dollar"></i> Billing</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Admin</div>
+    <a href="reports.html"  class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
+  </div>
+  <div class="sidebar-bottom"><div class="sidebar-user"><div class="user-avatar">DR</div><div class="user-info"><h4>Dr. Rahul Mehta</h4><span>Chief Medical Officer</span></div><i class="fas fa-chevron-right user-chevron"></i></div></div>
+</aside>
+
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="topbar-brand">MediCore <span>HMS</span></div>
+    <div class="topbar-search"><i class="fas fa-search"></i><input type="text" placeholder="Search invoice, patient…"></div>
+    <div class="topbar-right">
+      <div class="date-badge"><i class="far fa-calendar-alt" style="margin-right:6px"></i><span id="topbar-date"></span></div>
+      <div class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="dot"></span></div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="page-header"><h1>Billing & Payments</h1><p>Invoices, payments, insurance claims, and financial records</p></div>
+
+    <div class="stats-grid">
+      <div class="stat-card blue"><div class="stat-icon blue"><i class="fas fa-rupee-sign"></i></div><div class="stat-label">Revenue Today</div><div class="stat-value">₹4.2L</div><div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 12% vs yesterday</div></div>
+      <div class="stat-card teal"><div class="stat-icon teal"><i class="fas fa-check-circle"></i></div><div class="stat-label">Paid Invoices</div><div class="stat-value">142</div><div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> Today</div></div>
+      <div class="stat-card orange"><div class="stat-icon orange"><i class="fas fa-hourglass-half"></i></div><div class="stat-label">Pending Payment</div><div class="stat-value">28</div><div class="stat-trend" style="color:var(--text-muted)">₹1.8L pending</div></div>
+      <div class="stat-card red"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-label">Overdue</div><div class="stat-value">6</div><div class="stat-trend trend-down">Action required</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:22px">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Invoices</div><div class="card-subtitle">All billing records</div></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm btn-outline"><i class="fas fa-download"></i> Export</button>
+            <button class="btn-sm btn-primary" onclick="openModal('modal-new-invoice')"><i class="fas fa-plus"></i> New Invoice</button>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab(this)">All (176)</div>
+          <div class="tab" onclick="switchTab(this)">Paid (142)</div>
+          <div class="tab" onclick="switchTab(this)">Pending (28)</div>
+          <div class="tab" onclick="switchTab(this)">Overdue (6)</div>
+        </div>
+        <div class="filter-bar">
+          <input type="text" placeholder="Search by invoice or patient…" style="min-width:200px">
+          <select><option>All Types</option><option>Consultation</option><option>Surgery</option><option>Lab Test</option><option>Pharmacy</option><option>Room Charges</option></select>
+          <input type="date">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Invoice No.</th><th>Patient</th><th>Services</th><th>Amount</th><th>Paid</th><th>Insurance</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code style="font-size:0.74rem;background:var(--bg);padding:3px 8px;border-radius:5px">INV-8821</code></td>
+                <td><div style="font-size:0.83rem;font-weight:600">Priya Sharma</div><div style="font-size:0.7rem;color:var(--text-muted)">P-1042</div></td>
+                <td>Consultation + CBC</td>
+                <td><strong>₹2,450</strong></td>
+                <td style="color:var(--success);font-weight:600">₹2,450</td>
+                <td><span class="badge badge-green">Covered</span></td>
+                <td>27 Mar 2025</td>
+                <td><span class="badge badge-green">Paid</span></td>
+                <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-print"></i></button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:0.74rem;background:var(--bg);padding:3px 8px;border-radius:5px">INV-8820</code></td>
+                <td><div style="font-size:0.83rem;font-weight:600">Rajesh Kumar</div><div style="font-size:0.7rem;color:var(--text-muted)">P-1041</div></td>
+                <td>ECG + Lipid Profile</td>
+                <td><strong>₹3,800</strong></td>
+                <td style="color:var(--warning);font-weight:600">₹1,900</td>
+                <td><span class="badge badge-orange">Partial</span></td>
+                <td>26 Mar 2025</td>
+                <td><span class="badge badge-orange">Pending</span></td>
+                <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-print"></i></button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:0.74rem;background:var(--bg);padding:3px 8px;border-radius:5px">INV-8819</code></td>
+                <td><div style="font-size:0.83rem;font-weight:600">Arjun Verma</div><div style="font-size:0.7rem;color:var(--text-muted)">P-1039</div></td>
+                <td>Surgery + 3 Days Stay</td>
+                <td><strong>₹48,500</strong></td>
+                <td style="color:var(--success);font-weight:600">₹48,500</td>
+                <td><span class="badge badge-green">Covered</span></td>
+                <td>24 Mar 2025</td>
+                <td><span class="badge badge-green">Paid</span></td>
+                <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-print"></i></button></td>
+              </tr>
+              <tr style="background:#fce4ec10">
+                <td><code style="font-size:0.74rem;background:var(--bg);padding:3px 8px;border-radius:5px">INV-8818</code></td>
+                <td><div style="font-size:0.83rem;font-weight:600">Mohan Das</div><div style="font-size:0.7rem;color:var(--text-muted)">P-1037</div></td>
+                <td>MRI + Neurology OPD</td>
+                <td><strong>₹12,000</strong></td>
+                <td style="color:var(--danger);font-weight:600">₹0</td>
+                <td><span class="badge badge-red">No Cover</span></td>
+                <td>22 Mar 2025</td>
+                <td><span class="badge badge-red">Overdue</span></td>
+                <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-print"></i></button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:0.74rem;background:var(--bg);padding:3px 8px;border-radius:5px">INV-8817</code></td>
+                <td><div style="font-size:0.83rem;font-weight:600">Fatima Shaikh</div><div style="font-size:0.7rem;color:var(--text-muted)">P-1040</div></td>
+                <td>X-Ray + Ortho Consult</td>
+                <td><strong>₹2,100</strong></td>
+                <td style="color:var(--success);font-weight:600">₹2,100</td>
+                <td><span class="badge badge-green">Covered</span></td>
+                <td>20 Mar 2025</td>
+                <td><span class="badge badge-green">Paid</span></td>
+                <td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-print"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination"><span>Showing 1–5 of 176 invoices</span><div class="page-btns"><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">Next →</button></div></div>
+      </div>
+
+      <!-- Right panel -->
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <!-- Revenue summary -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px">Revenue This Month</div>
+          <div style="font-size:2rem;font-weight:700;color:var(--primary);margin-bottom:4px">₹38.4L</div>
+          <div style="font-size:0.78rem;color:var(--success);margin-bottom:16px"><i class="fas fa-arrow-up"></i> 18.2% vs last month</div>
+          <div class="progress-wrap"><div class="progress-head"><span>Consultation</span><strong>₹8.2L</strong></div><div class="progress-bar"><div class="progress-fill fill-blue" style="width:65%"></div></div></div>
+          <div class="progress-wrap"><div class="progress-head"><span>Surgery</span><strong>₹14.6L</strong></div><div class="progress-bar"><div class="progress-fill fill-teal" style="width:80%"></div></div></div>
+          <div class="progress-wrap"><div class="progress-head"><span>Lab & Radiology</span><strong>₹6.8L</strong></div><div class="progress-bar"><div class="progress-fill fill-orange" style="width:45%"></div></div></div>
+          <div class="progress-wrap"><div class="progress-head"><span>Pharmacy</span><strong>₹8.8L</strong></div><div class="progress-bar"><div class="progress-fill fill-red" style="width:55%"></div></div></div>
+        </div>
+
+        <!-- Insurance -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Insurance Claims</div>
+          <div class="appt-item"><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">Star Health</div><div style="font-size:0.72rem;color:var(--text-muted)">34 active claims</div></div><span class="badge badge-green">₹12.4L</span></div>
+          <div class="appt-item"><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">HDFC Ergo</div><div style="font-size:0.72rem;color:var(--text-muted)">18 active claims</div></div><span class="badge badge-blue">₹8.2L</span></div>
+          <div class="appt-item"><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">Bajaj Allianz</div><div style="font-size:0.72rem;color:var(--text-muted)">12 active claims</div></div><span class="badge badge-orange">₹4.6L</span></div>
+          <div class="appt-item" style="border:none"><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">PMJAY / Ayushman</div><div style="font-size:0.72rem;color:var(--text-muted)">24 active claims</div></div><span class="badge badge-green">₹6.8L</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW INVOICE MODAL -->
+<div class="modal-overlay" id="modal-new-invoice">
+  <div class="modal">
+    <div class="modal-header"><h2>Create New Invoice</h2><button class="modal-close" onclick="closeModal('modal-new-invoice')"><i class="fas fa-times"></i></button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Patient Name</label><input type="text" placeholder="Search patient…"></div>
+      <div class="form-group"><label>Patient ID</label><input type="text" placeholder="P-XXXX"></div>
+      <div class="form-group"><label>Invoice Date</label><input type="date"></div>
+      <div class="form-group"><label>Due Date</label><input type="date"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Services / Items</label><textarea placeholder="List services: Consultation - ₹500, CBC - ₹350, Room (2 days) - ₹2000…"></textarea></div>
+      <div class="form-group"><label>Subtotal (₹)</label><input type="number" placeholder="0.00"></div>
+      <div class="form-group"><label>Discount (%)</label><input type="number" placeholder="0" min="0" max="100"></div>
+      <div class="form-group"><label>Insurance Provider</label><select><option>None</option><option>Star Health</option><option>HDFC Ergo</option><option>Bajaj Allianz</option><option>PMJAY/Ayushman</option></select></div>
+      <div class="form-group"><label>Insurance Amount (₹)</label><input type="number" placeholder="0.00"></div>
+      <div class="form-group"><label>Payment Mode</label><select><option>Cash</option><option>Card</option><option>UPI</option><option>Net Banking</option><option>Insurance</option></select></div>
+      <div class="form-group"><label>Payment Status</label><select><option>Paid</option><option>Pending</option><option>Partial</option></select></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-sm btn-outline" onclick="closeModal('modal-new-invoice')">Cancel</button>
+      <button class="btn-sm btn-primary"><i class="fas fa-file-invoice"></i> Generate Invoice</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  function switchTab(el){ el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
+  document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
+</script>
+</body>
+</html>

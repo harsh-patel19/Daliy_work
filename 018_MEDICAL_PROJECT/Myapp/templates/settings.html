@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — MediCore HMS</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.settings-nav { display: flex; flex-direction: column; gap: 2px; }
+.settings-nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px;
+  cursor: pointer; font-size: 0.87rem; font-weight: 500; color: var(--text-light);
+  transition: all 0.2s; border: none; background: none; width: 100%; text-align: left;
+}
+.settings-nav-item:hover { background: var(--bg); color: var(--text); }
+.settings-nav-item.active { background: var(--badge-blue); color: var(--primary); font-weight: 600; }
+.settings-nav-item i { width: 20px; text-align: center; font-size: 0.9rem; }
+.settings-panel { display: none; }
+.settings-panel.active { display: block; animation: fadeUp 0.25s ease; }
+.toggle-wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.toggle-wrap:last-child { border-bottom: none; }
+.toggle-info h4 { font-size: 0.87rem; font-weight: 600; margin-bottom: 2px; }
+.toggle-info p { font-size: 0.75rem; color: var(--text-muted); }
+.toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0; background: var(--border); border-radius: 24px;
+  cursor: pointer; transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; left: 3px; top: 3px; transition: transform 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.toggle input:checked + .toggle-slider { background: var(--primary); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+.section-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+.user-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.user-row:last-child { border-bottom: none; }
+.user-row .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#1565C0,#00BCD4); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.88rem; flex-shrink: 0; }
+.user-row-info { flex: 1; }
+.user-row-info h4 { font-size: 0.85rem; font-weight: 600; }
+.user-row-info span { font-size: 0.72rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon"><i class="fas fa-hospital-user"></i></div><h2>MediCore HMS</h2><span>Hospital Management</span></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Main</div>
+    <a href="dashboard.html"    class="nav-item"><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <a href="patients.html"     class="nav-item"><i class="fas fa-user-injured"></i> Patients <span class="nav-badge">12</span></a>
+    <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check"></i> Appointments</a>
+    <a href="doctors.html"      class="nav-item"><i class="fas fa-user-md"></i> Doctors</a>
+    <a href="wards.html"        class="nav-item"><i class="fas fa-bed"></i> Wards & Beds</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Clinical</div>
+    <a href="pharmacy.html"   class="nav-item"><i class="fas fa-pills"></i> Pharmacy</a>
+    <a href="laboratory.html" class="nav-item"><i class="fas fa-flask"></i> Laboratory <span class="nav-badge green">5</span></a>
+    <a href="billing.html"    class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Billing</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Admin</div>
+    <a href="reports.html"  class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+    <a href="settings.html" class="nav-item active"><i class="fas fa-cog"></i> Settings</a>
+  </div>
+  <div class="sidebar-bottom"><div class="sidebar-user"><div class="user-avatar">DR</div><div class="user-info"><h4>Dr. Rahul Mehta</h4><span>Chief Medical Officer</span></div><i class="fas fa-chevron-right user-chevron"></i></div></div>
+</aside>
+
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="topbar-brand">MediCore <span>HMS</span></div>
+    <div class="topbar-search"><i class="fas fa-search"></i><input type="text" placeholder="Search settings…"></div>
+    <div class="topbar-right">
+      <div class="date-badge"><i class="far fa-calendar-alt" style="margin-right:6px"></i><span id="topbar-date"></span></div>
+      <div class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="dot"></span></div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="page-header"><h1>System Settings</h1><p>Configure hospital preferences, users, integrations, and security</p></div>
+
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:22px">
+      <!-- Settings nav -->
+      <div class="card" style="padding:16px;height:fit-content">
+        <div class="settings-nav">
+          <button class="settings-nav-item active" onclick="switchSettings(this,'hospital')"><i class="fas fa-hospital"></i> Hospital Profile</button>
+          <button class="settings-nav-item" onclick="switchSettings(this,'users')"><i class="fas fa-users-cog"></i> User Management</button>
+          <button class="settings-nav-item" onclick="switchSettings(this,'security')"><i class="fas fa-shield-alt"></i> Security & Access</button>
+          <button class="settings-nav-item" onclick="switchSettings(this,'notifications')"><i class="fas fa-bell"></i> Notifications</button>
+          <button class="settings-nav-item" onclick="switchSettings(this,'billing-s')"><i class="fas fa-file-invoice"></i> Billing Config</button>
+          <button class="settings-nav-item" onclick="switchSettings(this,'printing')"><i class="fas fa-print"></i> Printing & Reports</button>
+          <button class="settings-nav-item" onclick="switchSettings(this,'backup')"><i class="fas fa-database"></i> Backup & Restore</button>
+          <button class="settings-nav-item" onclick="switchSettings(this,'integrations')"><i class="fas fa-plug"></i> Integrations</button>
+        </div>
+      </div>
+
+      <!-- Settings panels -->
+      <div>
+        <!-- Hospital Profile -->
+        <div class="card settings-panel active" id="panel-hospital">
+          <div class="section-title"><i class="fas fa-hospital" style="margin-right:8px;color:var(--primary)"></i>Hospital Profile</div>
+          <div class="form-grid">
+            <div class="form-group"><label>Hospital Name</label><input type="text" value="MediCore Super Speciality Hospital"></div>
+            <div class="form-group"><label>Registration No.</label><input type="text" value="HOSP-GJ-0042"></div>
+            <div class="form-group"><label>Contact Number</label><input type="text" value="+91 98765 43210"></div>
+            <div class="form-group"><label>Alternate Contact</label><input type="text" value="+91 0261 234567"></div>
+            <div class="form-group"><label>Email</label><input type="email" value="admin@medicore.in"></div>
+            <div class="form-group"><label>Website</label><input type="text" value="www.medicore.in"></div>
+            <div class="form-group"><label>City</label><input type="text" value="Surat"></div>
+            <div class="form-group"><label>State</label><input type="text" value="Gujarat"></div>
+            <div class="form-group"><label>PIN Code</label><input type="text" value="395009"></div>
+            <div class="form-group"><label>GST Number</label><input type="text" value="24AAACH7409R1ZZ"></div>
+            <div class="form-group" style="grid-column:1/-1"><label>Full Address</label><textarea>Ring Road, Adajan, Surat, Gujarat — 395009</textarea></div>
+            <div class="form-group" style="grid-column:1/-1"><label>About / Description</label><textarea>MediCore is a NABH-accredited 320-bed super speciality hospital offering comprehensive healthcare services across 12 specialities.</textarea></div>
+          </div>
+          <div class="form-actions"><button class="btn-sm btn-outline">Reset</button><button class="btn-sm btn-primary"><i class="fas fa-save"></i> Save Changes</button></div>
+        </div>
+
+        <!-- User Management -->
+        <div class="card settings-panel" id="panel-users">
+          <div class="section-title"><i class="fas fa-users-cog" style="margin-right:8px;color:var(--primary)"></i>User Management</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+            <span style="font-size:0.83rem;color:var(--text-muted)">12 system users</span>
+            <button class="btn-sm btn-primary"><i class="fas fa-plus"></i> Add User</button>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar">DR</div>
+            <div class="user-row-info"><h4>Dr. Rahul Mehta</h4><span>admin@medicore.in · Chief Medical Officer</span></div>
+            <span class="badge badge-red">Admin</span>
+            <button class="action-btn action-edit" style="margin-left:8px"><i class="fas fa-pen"></i></button>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar" style="background:linear-gradient(135deg,#00897B,#4dd0e1)">AP</div>
+            <div class="user-row-info"><h4>Dr. Anita Patel</h4><span>anita.p@medicore.in · Cardiologist</span></div>
+            <span class="badge badge-blue">Doctor</span>
+            <button class="action-btn action-edit" style="margin-left:8px"><i class="fas fa-pen"></i></button>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar" style="background:linear-gradient(135deg,#F57C00,#ffb74d)">RN</div>
+            <div class="user-row-info"><h4>Rekha Nair</h4><span>rekha.n@medicore.in · Head Nurse</span></div>
+            <span class="badge badge-green">Nurse</span>
+            <button class="action-btn action-edit" style="margin-left:8px"><i class="fas fa-pen"></i></button>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar" style="background:linear-gradient(135deg,#7b1fa2,#ce93d8)">PB</div>
+            <div class="user-row-info"><h4>Priya Bhat</h4><span>priya.b@medicore.in · Pharmacist</span></div>
+            <span class="badge badge-orange">Staff</span>
+            <button class="action-btn action-edit" style="margin-left:8px"><i class="fas fa-pen"></i></button>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar" style="background:linear-gradient(135deg,#1565C0,#64b5f6)">AT</div>
+            <div class="user-row-info"><h4>Anand Tiwari</h4><span>anand.t@medicore.in · Lab Technician</span></div>
+            <span class="badge badge-orange">Staff</span>
+            <button class="action-btn action-edit" style="margin-left:8px"><i class="fas fa-pen"></i></button>
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div class="card settings-panel" id="panel-security">
+          <div class="section-title"><i class="fas fa-shield-alt" style="margin-right:8px;color:var(--primary)"></i>Security & Access Control</div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Two-Factor Authentication</h4><p>Require OTP on every login for all users</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Session Auto-Logout</h4><p>Automatically logout after 30 minutes of inactivity</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>IP Whitelisting</h4><p>Restrict login to specific hospital IP addresses only</p></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Audit Logging</h4><p>Log all user actions for compliance and security review</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Password Expiry (90 days)</h4><p>Force password reset every 90 days</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div style="margin-top:20px"><div class="form-group"><label>Minimum Password Length</label><input type="number" value="8" min="6" max="32" style="max-width:120px"></div></div>
+          <div class="form-actions"><button class="btn-sm btn-primary"><i class="fas fa-save"></i> Save Security Settings</button></div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="card settings-panel" id="panel-notifications">
+          <div class="section-title"><i class="fas fa-bell" style="margin-right:8px;color:var(--primary)"></i>Notification Preferences</div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Email Notifications</h4><p>Send appointment confirmations and reports via email</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>SMS Alerts</h4><p>Send SMS to patients for appointments and discharge</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Low Stock Alerts</h4><p>Alert pharmacy staff when medicine stock is low</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Critical Lab Value Alerts</h4><p>Immediately notify doctors of critical test results</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Bed Occupancy Alerts</h4><p>Alert when any ward exceeds 85% occupancy</p></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Payment Overdue Reminders</h4><p>Send reminders for unpaid invoices after 7 days</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="form-actions"><button class="btn-sm btn-primary"><i class="fas fa-save"></i> Save Preferences</button></div>
+        </div>
+
+        <!-- Billing Config -->
+        <div class="card settings-panel" id="panel-billing-s">
+          <div class="section-title"><i class="fas fa-file-invoice" style="margin-right:8px;color:var(--primary)"></i>Billing Configuration</div>
+          <div class="form-grid">
+            <div class="form-group"><label>Default Currency</label><select><option>INR (₹)</option><option>USD ($)</option></select></div>
+            <div class="form-group"><label>GST Rate (%)</label><input type="number" value="18" min="0" max="100"></div>
+            <div class="form-group"><label>Invoice Prefix</label><input type="text" value="INV-"></div>
+            <div class="form-group"><label>Invoice Start Number</label><input type="number" value="8800"></div>
+            <div class="form-group"><label>Payment Due (days)</label><input type="number" value="7"></div>
+            <div class="form-group"><label>Late Fee (%)</label><input type="number" value="2" min="0"></div>
+          </div>
+          <div style="margin-top:20px">
+            <div class="toggle-wrap"><div class="toggle-info"><h4>Auto-generate Invoice on Discharge</h4><p>Automatically create invoice when patient is discharged</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div class="toggle-info"><h4>Show GST Breakdown</h4><p>Display itemised GST on every invoice</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="form-actions"><button class="btn-sm btn-primary"><i class="fas fa-save"></i> Save Billing Config</button></div>
+        </div>
+
+        <!-- Printing -->
+        <div class="card settings-panel" id="panel-printing">
+          <div class="section-title"><i class="fas fa-print" style="margin-right:8px;color:var(--primary)"></i>Printing & Report Settings</div>
+          <div class="form-grid">
+            <div class="form-group"><label>Default Paper Size</label><select><option>A4</option><option>Letter</option><option>A5</option></select></div>
+            <div class="form-group"><label>Printer Name</label><input type="text" value="HP LaserJet Pro M404n"></div>
+            <div class="form-group"><label>Report Header Text</label><input type="text" value="MediCore Super Speciality Hospital"></div>
+            <div class="form-group"><label>Report Footer Text</label><input type="text" value="Thank you for choosing MediCore HMS"></div>
+          </div>
+          <div style="margin-top:20px">
+            <div class="toggle-wrap"><div class="toggle-info"><h4>Print Hospital Logo on Reports</h4><p>Include logo on all printouts</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div class="toggle-info"><h4>Auto-print on Save</h4><p>Automatically print invoice when saved</p></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="form-actions"><button class="btn-sm btn-primary"><i class="fas fa-save"></i> Save Print Settings</button></div>
+        </div>
+
+        <!-- Backup -->
+        <div class="card settings-panel" id="panel-backup">
+          <div class="section-title"><i class="fas fa-database" style="margin-right:8px;color:var(--primary)"></i>Backup & Restore</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px">
+            <div style="background:var(--badge-blue);border-radius:12px;padding:18px"><div style="font-size:0.75rem;color:var(--badge-blue-text);font-weight:600;margin-bottom:4px">Last Backup</div><div style="font-size:1rem;font-weight:700;color:var(--text)">Today, 02:00 AM</div><div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Auto backup — 284 MB</div></div>
+            <div style="background:var(--badge-green);border-radius:12px;padding:18px"><div style="font-size:0.75rem;color:var(--badge-green-text);font-weight:600;margin-bottom:4px">Backup Status</div><div style="font-size:1rem;font-weight:700;color:var(--success)">Healthy ✓</div><div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">All data secured</div></div>
+          </div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Automatic Daily Backup</h4><p>Backup runs every day at 2:00 AM</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Cloud Backup (Google Drive)</h4><p>Mirror backups to Google Drive automatically</p></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          <div style="margin-top:20px;display:flex;gap:12px">
+            <button class="btn-sm btn-primary"><i class="fas fa-download"></i> Backup Now</button>
+            <button class="btn-sm btn-outline"><i class="fas fa-upload"></i> Restore from Backup</button>
+          </div>
+        </div>
+
+        <!-- Integrations -->
+        <div class="card settings-panel" id="panel-integrations">
+          <div class="section-title"><i class="fas fa-plug" style="margin-right:8px;color:var(--primary)"></i>Integrations</div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>WhatsApp Notifications (Twilio)</h4><p>Send appointment reminders via WhatsApp</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Payment Gateway (Razorpay)</h4><p>Enable online invoice payments via Razorpay</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>HL7 / FHIR Integration</h4><p>Share clinical data with external EMR systems</p></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div class="toggle-info"><h4>Ayushman Bharat Portal</h4><p>Sync claims with PMJAY government portal</p></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="form-actions"><button class="btn-sm btn-primary"><i class="fas fa-save"></i> Save Integrations</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+
+  function switchSettings(btn, panelId) {
+    document.querySelectorAll('.settings-nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + panelId).classList.add('active');
+  }
+</script>
+</body>
+</html>

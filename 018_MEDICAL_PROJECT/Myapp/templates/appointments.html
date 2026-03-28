@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appointments — MediCore HMS</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon"><i class="fas fa-hospital-user"></i></div><h2>MediCore HMS</h2><span>Hospital Management</span></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Main</div>
+    <a href="dashboard.html"    class="nav-item"><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <a href="patients.html"     class="nav-item"><i class="fas fa-user-injured"></i> Patients <span class="nav-badge">12</span></a>
+    <a href="appointments.html" class="nav-item active"><i class="fas fa-calendar-check"></i> Appointments</a>
+    <a href="doctors.html"      class="nav-item"><i class="fas fa-user-md"></i> Doctors</a>
+    <a href="wards.html"        class="nav-item"><i class="fas fa-bed"></i> Wards & Beds</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Clinical</div>
+    <a href="pharmacy.html"   class="nav-item"><i class="fas fa-pills"></i> Pharmacy</a>
+    <a href="laboratory.html" class="nav-item"><i class="fas fa-flask"></i> Laboratory <span class="nav-badge green">5</span></a>
+    <a href="billing.html"    class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Billing</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Admin</div>
+    <a href="reports.html"  class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
+  </div>
+  <div class="sidebar-bottom"><div class="sidebar-user"><div class="user-avatar">DR</div><div class="user-info"><h4>Dr. Rahul Mehta</h4><span>Chief Medical Officer</span></div><i class="fas fa-chevron-right user-chevron"></i></div></div>
+</aside>
+
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="topbar-brand">MediCore <span>HMS</span></div>
+    <div class="topbar-search"><i class="fas fa-search"></i><input type="text" placeholder="Search appointments…"></div>
+    <div class="topbar-right">
+      <div class="date-badge"><i class="far fa-calendar-alt" style="margin-right:6px"></i><span id="topbar-date"></span></div>
+      <div class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="dot"></span></div>
+      <div class="topbar-icon-btn"><i class="fas fa-envelope"></i></div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Appointments</h1>
+      <p>Schedule, manage, and track all patient appointments</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card blue"><div class="stat-icon blue"><i class="fas fa-calendar-day"></i></div><div class="stat-label">Today's Total</div><div class="stat-value">32</div><div class="stat-trend" style="color:var(--text-muted)">All departments</div></div>
+      <div class="stat-card teal"><div class="stat-icon teal"><i class="fas fa-check-circle"></i></div><div class="stat-label">Completed</div><div class="stat-value">8</div><div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 25%</div></div>
+      <div class="stat-card orange"><div class="stat-icon orange"><i class="fas fa-clock"></i></div><div class="stat-label">Upcoming</div><div class="stat-value">87</div><div class="stat-trend" style="color:var(--text-muted)">Next 7 days</div></div>
+      <div class="stat-card red"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-label">Cancelled</div><div class="stat-value">3</div><div class="stat-trend trend-down"><i class="fas fa-arrow-down"></i> Today</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:22px">
+      <!-- Main table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Appointment List</div>
+          <button class="btn-sm btn-primary" onclick="openModal('modal-book-appt')"><i class="fas fa-plus"></i> Book Appointment</button>
+        </div>
+        <div class="tabs" id="appt-tabs">
+          <div class="tab active" onclick="switchTab(this,'Today (32)')">Today (32)</div>
+          <div class="tab" onclick="switchTab(this,'Upcoming (87)')">Upcoming (87)</div>
+          <div class="tab" onclick="switchTab(this,'Completed (248)')">Completed (248)</div>
+          <div class="tab" onclick="switchTab(this,'Cancelled (12)')">Cancelled (12)</div>
+        </div>
+
+        <div class="filter-bar" style="margin-bottom:14px">
+          <input type="text" placeholder="Search patient name…" style="min-width:180px">
+          <select><option>All Departments</option><option>Cardiology</option><option>Orthopaedics</option><option>Surgery</option><option>Gynaecology</option></select>
+          <input type="date">
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Time</th><th>Patient</th><th>Doctor</th><th>Department</th><th>Type</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><strong style="color:var(--primary)">09:00 AM</strong></td><td>Priya Sharma</td><td>Dr. Anita Patel</td><td>Cardiology</td><td><span class="badge badge-blue">Checkup</span></td><td>OPD-4</td><td><span class="badge badge-green">Done</span></td><td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button></td></tr>
+              <tr><td><strong style="color:var(--primary)">10:30 AM</strong></td><td>Rajesh Kumar</td><td>Dr. Suresh Iyer</td><td>Cardiology</td><td><span class="badge badge-orange">Follow-up</span></td><td>CARD-2</td><td><span class="badge badge-blue">Active</span></td><td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button></td></tr>
+              <tr><td><strong style="color:var(--primary)">11:15 AM</strong></td><td>Fatima Shaikh</td><td>Dr. Vikram Nair</td><td>Orthopaedics</td><td><span class="badge badge-blue">Follow-up</span></td><td>ORTH-1</td><td><span class="badge badge-orange">Waiting</span></td><td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button></td></tr>
+              <tr><td><strong style="color:var(--primary)">02:00 PM</strong></td><td>Arjun Verma</td><td>Dr. Meena Rao</td><td>Surgery</td><td><span class="badge badge-red">Post-Op</span></td><td>SURG-3</td><td><span class="badge badge-gray">Scheduled</span></td><td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button></td></tr>
+              <tr><td><strong style="color:var(--primary)">03:30 PM</strong></td><td>Sunita Gupta</td><td>Dr. Kavitha Menon</td><td>Gynaecology</td><td><span class="badge badge-blue">Checkup</span></td><td>GYN-2</td><td><span class="badge badge-gray">Scheduled</span></td><td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button></td></tr>
+              <tr><td><strong style="color:var(--primary)">04:15 PM</strong></td><td>Mohan Das</td><td>Dr. Ramesh Shah</td><td>Neurology</td><td><span class="badge badge-orange">Review</span></td><td>NEURO-1</td><td><span class="badge badge-gray">Scheduled</span></td><td><button class="action-btn action-view"><i class="fas fa-eye"></i></button><button class="action-btn action-edit"><i class="fas fa-pen"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span>Showing 1–6 of 32 appointments</span>
+          <div class="page-btns">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <!-- Quick stats -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px">Department Wise</div>
+          <div class="progress-wrap"><div class="progress-head"><span>Cardiology</span><strong>12</strong></div><div class="progress-bar"><div class="progress-fill fill-blue" style="width:75%"></div></div></div>
+          <div class="progress-wrap"><div class="progress-head"><span>Orthopaedics</span><strong>7</strong></div><div class="progress-bar"><div class="progress-fill fill-teal" style="width:44%"></div></div></div>
+          <div class="progress-wrap"><div class="progress-head"><span>Surgery</span><strong>5</strong></div><div class="progress-bar"><div class="progress-fill fill-orange" style="width:31%"></div></div></div>
+          <div class="progress-wrap"><div class="progress-head"><span>Gynaecology</span><strong>4</strong></div><div class="progress-bar"><div class="progress-fill fill-red" style="width:25%"></div></div></div>
+        </div>
+
+        <!-- Doctor availability -->
+        <div class="card" style="flex:1">
+          <div class="card-title" style="margin-bottom:16px">Doctor Availability</div>
+          <div class="appt-item"><div class="avatar" style="background:#e3f2fd;color:#1565C0">AP</div><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">Dr. Anita Patel</div><div style="font-size:0.72rem;color:var(--text-muted)">Cardiology</div></div><span class="badge badge-green">Available</span></div>
+          <div class="appt-item"><div class="avatar" style="background:#e0f2f1;color:#00897B">SI</div><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">Dr. Suresh Iyer</div><div style="font-size:0.72rem;color:var(--text-muted)">Cardiology</div></div><span class="badge badge-blue">In Session</span></div>
+          <div class="appt-item"><div class="avatar" style="background:#fff3e0;color:#F57C00">VN</div><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">Dr. Vikram Nair</div><div style="font-size:0.72rem;color:var(--text-muted)">Orthopaedics</div></div><span class="badge badge-green">Available</span></div>
+          <div class="appt-item"><div class="avatar" style="background:#fce4ec;color:#C62828">MR</div><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">Dr. Meena Rao</div><div style="font-size:0.72rem;color:var(--text-muted)">Surgery</div></div><span class="badge badge-red">On Leave</span></div>
+          <div class="appt-item" style="border:none"><div class="avatar" style="background:#f3e5f5;color:#7b1fa2">KM</div><div style="flex:1"><div style="font-size:0.83rem;font-weight:600">Dr. Kavitha Menon</div><div style="font-size:0.72rem;color:var(--text-muted)">Gynaecology</div></div><span class="badge badge-green">Available</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK APPOINTMENT MODAL -->
+<div class="modal-overlay" id="modal-book-appt">
+  <div class="modal">
+    <div class="modal-header"><h2>Book Appointment</h2><button class="modal-close" onclick="closeModal('modal-book-appt')"><i class="fas fa-times"></i></button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Patient Name</label><input type="text" placeholder="Search patient…"></div>
+      <div class="form-group"><label>Patient ID</label><input type="text" placeholder="P-XXXX"></div>
+      <div class="form-group"><label>Department</label><select><option>Select</option><option>Cardiology</option><option>Orthopaedics</option><option>General</option><option>Paediatrics</option><option>Gynaecology</option><option>Neurology</option></select></div>
+      <div class="form-group"><label>Assign Doctor</label><select><option>Select</option><option>Dr. Anita Patel</option><option>Dr. Suresh Iyer</option><option>Dr. Vikram Nair</option><option>Dr. Kavitha Menon</option><option>Dr. Ramesh Shah</option></select></div>
+      <div class="form-group"><label>Appointment Date</label><input type="date"></div>
+      <div class="form-group"><label>Appointment Time</label><input type="time"></div>
+      <div class="form-group"><label>Appointment Type</label><select><option>Checkup</option><option>Follow-up</option><option>Emergency</option><option>Post-Op Review</option><option>Consultation</option></select></div>
+      <div class="form-group"><label>Priority</label><select><option>Normal</option><option>High</option><option>Emergency</option></select></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Notes / Reason for Visit</label><textarea placeholder="Describe symptoms or reason for visit…"></textarea></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-sm btn-outline" onclick="closeModal('modal-book-appt')">Cancel</button>
+      <button class="btn-sm btn-primary"><i class="fas fa-calendar-check"></i> Book Appointment</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  function switchTab(el){ el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
+  document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
+</script>
+</body>
+</html>
