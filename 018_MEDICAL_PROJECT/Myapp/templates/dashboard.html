@@ -1,211 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — MediCore HMS</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <title>HMS - Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f0f2f5; }
+
+    /* Navbar */
+    .navbar {
+      background: #2c3e50;
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar h1 { font-size: 18px; }
+    .navbar a { color: white; text-decoration: none; font-size: 14px; }
+    .navbar a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .wrapper { display: flex; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 200px;
+      background: #34495e;
+      min-height: calc(100vh - 50px);
+      padding: 20px 0;
+    }
+    .sidebar a {
+      display: block;
+      padding: 12px 20px;
+      color: #ecf0f1;
+      text-decoration: none;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .sidebar a:hover { background: #2c3e50; }
+    .sidebar a.active { background: #2980b9; }
+
+    /* Main Content */
+    .content { flex: 1; padding: 24px; }
+
+    h2 { color: #2c3e50; margin-bottom: 20px; font-size: 20px; }
+
+    /* Stat Cards */
+    .cards {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: white;
+      padding: 20px 28px;
+      border-radius: 6px;
+      border-left: 4px solid #2980b9;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      min-width: 160px;
+    }
+    .card.green { border-color: #27ae60; }
+    .card.orange { border-color: #e67e22; }
+    .card.red { border-color: #e74c3c; }
+    .card .num { font-size: 32px; font-weight: bold; color: #2c3e50; }
+    .card .label { font-size: 13px; color: #888; margin-top: 4px; }
+
+    /* Table */
+    .table-box {
+      background: white;
+      border-radius: 6px;
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .table-box h3 { margin-bottom: 14px; color: #2c3e50; font-size: 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { background: #f5f6fa; padding: 10px 12px; text-align: left; color: #555; border-bottom: 2px solid #eee; }
+    td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; color: #333; }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .badge.admitted { background: #d5f5e3; color: #1e8449; }
+    .badge.opd { background: #d6eaf8; color: #1a5276; }
+    .badge.waiting { background: #fef9e7; color: #9a7d0a; }
+  </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-icon"><i class="fas fa-hospital-user"></i></div>
-    <h2>MediCore HMS</h2>
-    <span>Hospital Management</span>
+  <!-- Navbar -->
+  <div class="navbar">
+    <h1>🏥 Hospital Management System</h1>
+    <a href="login.html">Logout</a>
   </div>
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Main</div>
-    <a href="dashboard.html" class="nav-item active"><i class="fas fa-chart-pie"></i> Dashboard</a>
-    <a href="patients.html"  class="nav-item"><i class="fas fa-user-injured"></i> Patients <span class="nav-badge">12</span></a>
-    <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check"></i> Appointments</a>
-    <a href="doctors.html"   class="nav-item"><i class="fas fa-user-md"></i> Doctors</a>
-    <a href="wards.html"     class="nav-item"><i class="fas fa-bed"></i> Wards & Beds</a>
-  </div>
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Clinical</div>
-    <a href="pharmacy.html"  class="nav-item"><i class="fas fa-pills"></i> Pharmacy</a>
-    <a href="laboratory.html" class="nav-item"><i class="fas fa-flask"></i> Laboratory <span class="nav-badge green">5</span></a>
-    <a href="billing.html"   class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Billing</a>
-  </div>
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Admin</div>
-    <a href="reports.html"   class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
-    <a href="settings.html"  class="nav-item"><i class="fas fa-cog"></i> Settings</a>
-  </div>
-  <div class="sidebar-bottom">
-    <div class="sidebar-user">
-      <div class="user-avatar">DR</div>
-      <div class="user-info"><h4>Dr. Rahul Mehta</h4><span>Chief Medical Officer</span></div>
-      <i class="fas fa-chevron-right user-chevron"></i>
-    </div>
-  </div>
-</aside>
 
-<!-- MAIN -->
-<div class="main-wrap">
-  <!-- TOPBAR -->
-  <header class="topbar">
-    <div class="topbar-brand">MediCore <span>HMS</span></div>
-    <div class="topbar-search"><i class="fas fa-search"></i><input type="text" placeholder="Search patients, doctors…"></div>
-    <div class="topbar-right">
-      <div class="date-badge"><i class="far fa-calendar-alt" style="margin-right:6px"></i><span id="topbar-date"></span></div>
-      <div class="topbar-icon-btn"><i class="fas fa-bell"></i><span class="dot"></span></div>
-      <div class="topbar-icon-btn"><i class="fas fa-envelope"></i></div>
-      <div class="topbar-icon-btn"><i class="fas fa-ambulance" style="color:#C62828"></i></div>
-    </div>
-  </header>
+  <div class="wrapper">
 
-  <!-- PAGE -->
-  <div class="page">
-    <div class="page-header">
-      <h1>Dashboard Overview</h1>
-      <p>Welcome back, Dr. Rahul. Here's your hospital summary for today.</p>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="dashboard.html" class="active">📊 Dashboard</a>
+      <a href="patient_list.html">👥 Patients</a>
+      <a href="add_patient.html">➕ Add Patient</a>
+      <a href="doctor_list.html">🩺 Doctors</a>
+      <a href="appointments.html">📅 Appointments</a>
     </div>
 
-    <!-- Emergency Banner -->
-    <div class="emergency-banner">
-      <i class="fas fa-exclamation-triangle"></i>
-      <div><p>Emergency Alert — ICU Bed Shortage</p><span>Only 2 ICU beds remaining. Coordinate with Ward B immediately.</span></div>
-      <button class="btn-sm btn-outline" style="margin-left:auto;color:#fff;border-color:rgba(255,255,255,0.5);flex-shrink:0">Acknowledge</button>
-    </div>
+    <!-- Content -->
+    <div class="content">
+      <h2>Dashboard</h2>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card blue">
-        <div class="stat-icon blue"><i class="fas fa-user-injured"></i></div>
-        <div class="stat-label">Total Patients</div>
-        <div class="stat-value">1,284</div>
-        <div class="stat-trend"><span class="trend-up"><i class="fas fa-arrow-up"></i> 8.4%</span><span style="color:var(--text-muted)">vs last month</span></div>
-      </div>
-      <div class="stat-card teal">
-        <div class="stat-icon teal"><i class="fas fa-procedures"></i></div>
-        <div class="stat-label">Admissions Today</div>
-        <div class="stat-value">47</div>
-        <div class="stat-trend"><span class="trend-up"><i class="fas fa-arrow-up"></i> 3.1%</span><span style="color:var(--text-muted)">vs yesterday</span></div>
-      </div>
-      <div class="stat-card orange">
-        <div class="stat-icon orange"><i class="fas fa-user-md"></i></div>
-        <div class="stat-label">Available Doctors</div>
-        <div class="stat-value">38 <span style="font-size:1rem;color:var(--text-muted)">/ 52</span></div>
-        <div class="stat-trend"><span class="trend-down"><i class="fas fa-arrow-down"></i> 2 on leave</span></div>
-      </div>
-      <div class="stat-card red">
-        <div class="stat-icon red"><i class="fas fa-bed"></i></div>
-        <div class="stat-label">Bed Occupancy</div>
-        <div class="stat-value">82<span style="font-size:1.1rem">%</span></div>
-        <div class="stat-trend"><span class="trend-down"><i class="fas fa-arrow-up"></i> Critical</span></div>
-      </div>
-    </div>
-
-    <!-- Content Grid -->
-    <div class="content-grid">
-      <!-- Appointments -->
-      <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">Today's Appointments</div><div class="card-subtitle">32 scheduled • 8 completed</div></div>
-          <a href="appointments.html" class="card-action">View All →</a>
-        </div>
-        <div class="appt-item">
-          <div class="appt-time">09:00<span>AM</span></div>
-          <div class="appt-line" style="background:var(--success)"></div>
-          <div class="appt-info"><h4>Priya Sharma — General Checkup</h4><p>Dr. Anita Patel · OPD Room 4</p></div>
-          <span class="badge badge-green"><i class="fas fa-circle"></i>Done</span>
-        </div>
-        <div class="appt-item">
-          <div class="appt-time">10:30<span>AM</span></div>
-          <div class="appt-line" style="background:var(--primary)"></div>
-          <div class="appt-info"><h4>Rajesh Kumar — Cardiac Review</h4><p>Dr. Suresh Iyer · Cardiology Wing</p></div>
-          <span class="badge badge-blue"><i class="fas fa-circle"></i>Active</span>
-        </div>
-        <div class="appt-item">
-          <div class="appt-time">11:15<span>AM</span></div>
-          <div class="appt-line"></div>
-          <div class="appt-info"><h4>Fatima Shaikh — Ortho Follow-up</h4><p>Dr. Vikram Nair · Orthopaedics</p></div>
-          <span class="badge badge-orange"><i class="fas fa-circle"></i>Waiting</span>
-        </div>
-        <div class="appt-item">
-          <div class="appt-time">02:00<span>PM</span></div>
-          <div class="appt-line"></div>
-          <div class="appt-info"><h4>Arjun Verma — Post-Surgery Check</h4><p>Dr. Meena Rao · General Surgery</p></div>
-          <span class="badge badge-gray">Scheduled</span>
-        </div>
-        <div class="appt-item">
-          <div class="appt-time">03:30<span>PM</span></div>
-          <div class="appt-line"></div>
-          <div class="appt-info"><h4>Sunita Gupta — Gynaecology</h4><p>Dr. Kavitha Menon · Women's Health</p></div>
-          <span class="badge badge-gray">Scheduled</span>
-        </div>
-      </div>
-
-      <!-- Right column -->
-      <div style="display:flex;flex-direction:column;gap:22px">
-        <!-- Bed occupancy -->
+      <!-- Stats -->
+      <div class="cards">
         <div class="card">
-          <div class="card-header"><div class="card-title">Bed Occupancy by Ward</div><a href="wards.html" class="card-action">Manage →</a></div>
-          <div class="progress-wrap">
-            <div class="progress-head"><span>ICU</span><strong>18 / 20</strong></div>
-            <div class="progress-bar"><div class="progress-fill fill-red" style="width:90%"></div></div>
-          </div>
-          <div class="progress-wrap">
-            <div class="progress-head"><span>General Ward A</span><strong>45 / 60</strong></div>
-            <div class="progress-bar"><div class="progress-fill fill-blue" style="width:75%"></div></div>
-          </div>
-          <div class="progress-wrap">
-            <div class="progress-head"><span>Paediatrics</span><strong>22 / 30</strong></div>
-            <div class="progress-bar"><div class="progress-fill fill-teal" style="width:73%"></div></div>
-          </div>
-          <div class="progress-wrap">
-            <div class="progress-head"><span>Maternity</span><strong>14 / 25</strong></div>
-            <div class="progress-bar"><div class="progress-fill fill-orange" style="width:56%"></div></div>
-          </div>
+          <div class="num">120</div>
+          <div class="label">Total Patients</div>
         </div>
+        <div class="card green">
+          <div class="num">15</div>
+          <div class="label">Doctors</div>
+        </div>
+        <div class="card orange">
+          <div class="num">8</div>
+          <div class="label">Today's Appointments</div>
+        </div>
+        <div class="card red">
+          <div class="num">3</div>
+          <div class="label">Admitted Today</div>
+        </div>
+      </div>
 
-        <!-- Activity -->
-        <div class="card" style="flex:1">
-          <div class="card-header"><div class="card-title">Recent Activity</div></div>
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-dot" style="background:#e3f2fd;color:#1565C0"><i class="fas fa-user-plus"></i></div>
-              <div class="timeline-content"><h4>New patient admitted</h4><p>Mohan Das — Ward B, Bed 14</p><div class="time">10 min ago</div></div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot" style="background:#e0f2f1;color:#00897B"><i class="fas fa-file-medical"></i></div>
-              <div class="timeline-content"><h4>Lab results updated</h4><p>CBC Report — Priya Sharma</p><div class="time">25 min ago</div></div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot" style="background:#fff3e0;color:#F57C00"><i class="fas fa-pills"></i></div>
-              <div class="timeline-content"><h4>Prescription issued</h4><p>Dr. Iyer → Rajesh Kumar</p><div class="time">1 hr ago</div></div>
-            </div>
-            <div class="timeline-item" style="padding-bottom:0">
-              <div class="timeline-dot" style="background:#fce4ec;color:#C62828"><i class="fas fa-sign-out-alt"></i></div>
-              <div class="timeline-content"><h4>Patient discharged</h4><p>Lata Joshi — Recovery complete</p><div class="time">2 hr ago</div></div>
-            </div>
-          </div>
-        </div>
+      <!-- Recent Patients Table -->
+      <div class="table-box">
+        <h3>Recent Patients</h3>
+        <!-- Django: {% for patient in recent_patients %} -->
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Department</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#001</td>
+              <td>Rahul Sharma</td>
+              <td>34</td>
+              <td>Cardiology</td>
+              <td><span class="badge admitted">Admitted</span></td>
+            </tr>
+            <tr>
+              <td>#002</td>
+              <td>Priya Patel</td>
+              <td>28</td>
+              <td>Orthopedics</td>
+              <td><span class="badge opd">OPD</span></td>
+            </tr>
+            <tr>
+              <td>#003</td>
+              <td>Suresh Kumar</td>
+              <td>52</td>
+              <td>Neurology</td>
+              <td><span class="badge waiting">Waiting</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Django: {% endfor %} -->
       </div>
     </div>
 
-    <!-- Bar Chart -->
-    <div class="card">
-      <div class="card-header"><div><div class="card-title">Weekly Patient Admissions</div><div class="card-subtitle">Last 7 days</div></div></div>
-      <div class="bar-chart" style="height:150px">
-        <div class="bar-col"><div class="bar-val">38</div><div class="bar" style="height:63%;background:linear-gradient(180deg,#42a5f5,#1565C0)"></div><div class="bar-label">Mon</div></div>
-        <div class="bar-col"><div class="bar-val">52</div><div class="bar" style="height:87%;background:linear-gradient(180deg,#42a5f5,#1565C0)"></div><div class="bar-label">Tue</div></div>
-        <div class="bar-col"><div class="bar-val">45</div><div class="bar" style="height:75%;background:linear-gradient(180deg,#42a5f5,#1565C0)"></div><div class="bar-label">Wed</div></div>
-        <div class="bar-col"><div class="bar-val">60</div><div class="bar" style="height:100%;background:linear-gradient(180deg,#26C6DA,#00BCD4)"></div><div class="bar-label">Thu</div></div>
-        <div class="bar-col"><div class="bar-val">47</div><div class="bar" style="height:78%;background:linear-gradient(180deg,#42a5f5,#1565C0)"></div><div class="bar-label">Fri</div></div>
-        <div class="bar-col"><div class="bar-val">33</div><div class="bar" style="height:55%;background:linear-gradient(180deg,#90caf9,#64b5f6)"></div><div class="bar-label">Sat</div></div>
-        <div class="bar-col"><div class="bar-val">29</div><div class="bar" style="height:48%;background:linear-gradient(180deg,#90caf9,#64b5f6)"></div><div class="bar-label">Sun</div></div>
-      </div>
-    </div>
-  </div><!-- /page -->
-</div><!-- /main-wrap -->
-
-<script>
-  document.getElementById('topbar-date').textContent =
-    new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-</script>
+  </div>
 </body>
 </html>

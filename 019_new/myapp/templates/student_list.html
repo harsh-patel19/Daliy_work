@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Student list</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        Name:<input type="text" name="name"><br><br>
+        Email: <input type="text" name="email"><br><br>
+        Age: <input type="number" name="age"><br><br>
+        Image:<input type="file" name="image"><br><br>
+        <button type="submit">ADD</button>
+    </form>
+
+    <h2 algin="center"></h2>
+    <table align="center" border="2">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Age</th>
+            <th>Image</th>
+            <th>Action</th>
+        </tr>
+        {% for Students in Students %}
+        <tr>
+            <td>{{Students.name}}</td>
+            <td>{{Students.email}}</td>
+            <td>{{Students.age}}</td>
+            <td>
+            {% if Students.image %}
+                <img src="{{ Students.image.url }}" width="100">
+            {% else %}
+                no image
+            {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'update' Students.id %}">Edit</a>
+                <a href="{% url 'delete' Students.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
