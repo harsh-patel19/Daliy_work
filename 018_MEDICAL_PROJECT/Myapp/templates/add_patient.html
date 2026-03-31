@@ -1,215 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>HMS - Add Patient</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #f0f2f5; }
-    .navbar { background: #2c3e50; color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
-    .navbar h1 { font-size: 18px; }
-    .navbar a { color: white; text-decoration: none; font-size: 14px; }
-    .wrapper { display: flex; }
-    .sidebar { width: 200px; background: #34495e; min-height: calc(100vh - 50px); padding: 20px 0; }
-    .sidebar a { display: block; padding: 12px 20px; color: #ecf0f1; text-decoration: none; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .sidebar a:hover { background: #2c3e50; }
-    .sidebar a.active { background: #2980b9; }
-    .content { flex: 1; padding: 24px; }
-    h2 { color: #2c3e50; margin-bottom: 20px; font-size: 20px; }
+{% extends 'base.html' %}
 
-    .form-box {
-      background: white;
-      padding: 28px;
-      border-radius: 6px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      max-width: 700px;
-    }
-    .form-row {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    label {
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 5px;
-    }
-    input, select, textarea {
-      padding: 9px 11px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-      font-family: Arial, sans-serif;
-    }
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #2980b9;
-    }
-    textarea { resize: vertical; height: 80px; }
+{% block title %}{% if patient %}Edit Patient{% else %}Add Patient{% endif %}{% endblock %}
+{% block nav_add_patient %}active{% endblock %}
 
-    .section-title {
-      font-size: 15px;
-      font-weight: bold;
-      color: #2980b9;
-      margin: 20px 0 14px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 6px;
-    }
+{% block content %}
+<h2>{% if patient %}Edit Patient{% else %}Add New Patient{% endif %}</h2>
 
-    .btn-row { margin-top: 24px; display: flex; gap: 12px; }
-    .btn { padding: 10px 24px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; text-decoration: none; }
-    .btn-primary { background: #2980b9; color: white; }
-    .btn-primary:hover { background: #2471a3; }
-    .btn-cancel { background: #ccc; color: #333; }
-    .btn-cancel:hover { background: #bbb; }
-  </style>
-</head>
-<body>
+<div class="form-box">
+  <form action="
+    {% if patient %}
+      {% url 'edit_patient' patient.id %}
+    {% else %}
+      {% url 'add_patient' %}
+    {% endif %}
+  " method="POST">
+    {% csrf_token %}
 
-  <div class="navbar">
-    <h1>🏥 Hospital Management System</h1>
-    <a href="login.html">Logout</a>
-  </div>
+    <!-- Personal Details -->
+    <div class="section-title">Personal Details</div>
 
-  <div class="wrapper">
-    <div class="sidebar">
-      <a href="dashboard.html">📊 Dashboard</a>
-      <a href="patient_list.html">👥 Patients</a>
-      <a href="add_patient.html" class="active">➕ Add Patient</a>
-      <a href="doctor_list.html">🩺 Doctors</a>
-      <a href="appointments.html">📅 Appointments</a>
-    </div>
-
-    <div class="content">
-      <h2>Add New Patient</h2>
-
-      <div class="form-box">
-        <!-- Django: action="{% url 'add_patient' %}" method="POST" -->
-        <!-- {% csrf_token %} -->
-        <form action="patient_list.html" method="get">
-
-          <div class="section-title">Personal Details</div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>First Name *</label>
-              <input type="text" name="first_name" placeholder="Enter first name" required>
-            </div>
-            <div class="form-group">
-              <label>Last Name *</label>
-              <input type="text" name="last_name" placeholder="Enter last name" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Date of Birth *</label>
-              <input type="date" name="dob" required>
-            </div>
-            <div class="form-group">
-              <label>Gender *</label>
-              <select name="gender">
-                <option value="">-- Select --</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Blood Group</label>
-              <select name="blood_group">
-                <option value="">-- Select --</option>
-                <option>A+</option><option>A-</option>
-                <option>B+</option><option>B-</option>
-                <option>O+</option><option>O-</option>
-                <option>AB+</option><option>AB-</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Phone Number *</label>
-              <input type="text" name="phone" placeholder="98765 43210" required>
-            </div>
-            <div class="form-group">
-              <label>Email</label>
-              <input type="email" name="email" placeholder="example@email.com">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Address</label>
-              <textarea name="address" placeholder="Enter full address"></textarea>
-            </div>
-          </div>
-
-          <div class="section-title">Medical Details</div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Department *</label>
-              <select name="department" required>
-                <option value="">-- Select --</option>
-                <option>Cardiology</option>
-                <option>Neurology</option>
-                <option>Orthopedics</option>
-                <option>Gynecology</option>
-                <option>Pediatrics</option>
-                <option>General</option>
-                <option>ENT</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Assigned Doctor *</label>
-              <select name="doctor" required>
-                <option value="">-- Select --</option>
-                <option>Dr. Mehta</option>
-                <option>Dr. Singh</option>
-                <option>Dr. Rao</option>
-                <option>Dr. Gupta</option>
-                <option>Dr. Khan</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Admission Type</label>
-              <select name="admission_type">
-                <option>OPD</option>
-                <option>IPD</option>
-                <option>Emergency</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Admission Date</label>
-              <input type="date" name="admission_date">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Symptoms / Complaint</label>
-              <textarea name="symptoms" placeholder="Describe symptoms..."></textarea>
-            </div>
-          </div>
-
-          <div class="btn-row">
-            <button type="submit" class="btn btn-primary">Save Patient</button>
-            <a href="patient_list.html" class="btn btn-cancel">Cancel</a>
-          </div>
-
-        </form>
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name *</label>
+        <input type="text" name="first_name"
+               value="{% if patient %}{{ patient.first_name }}{% endif %}"
+               required>
+      </div>
+      <div class="form-group">
+        <label>Last Name *</label>
+        <input type="text" name="last_name"
+               value="{% if patient %}{{ patient.last_name }}{% endif %}"
+               required>
       </div>
     </div>
-  </div>
 
-</body>
-</html>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date of Birth *</label>
+        <input type="date" name="dob"
+               value="{% if patient %}{{ patient.dob|date:'Y-m-d' }}{% endif %}"
+               required>
+      </div>
+      <div class="form-group">
+        <label>Gender *</label>
+        <select name="gender">
+          <option value="">-- Select --</option>
+          <option value="Male"   {% if patient.gender == 'Male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if patient.gender == 'Female' %}selected{% endif %}>Female</option>
+          <option value="Other"  {% if patient.gender == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Blood Group</label>
+        <select name="blood_group">
+          <option value="">-- Select --</option>
+          <option value="A+"  {% if patient.blood_group == 'A+' %}selected{% endif %}>A+</option>
+          <option value="A-"  {% if patient.blood_group == 'A-' %}selected{% endif %}>A-</option>
+          <option value="B+"  {% if patient.blood_group == 'B+' %}selected{% endif %}>B+</option>
+          <option value="B-"  {% if patient.blood_group == 'B-' %}selected{% endif %}>B-</option>
+          <option value="O+"  {% if patient.blood_group == 'O+' %}selected{% endif %}>O+</option>
+          <option value="O-"  {% if patient.blood_group == 'O-' %}selected{% endif %}>O-</option>
+          <option value="AB+" {% if patient.blood_group == 'AB+' %}selected{% endif %}>AB+</option>
+          <option value="AB-" {% if patient.blood_group == 'AB-' %}selected{% endif %}>AB-</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone *</label>
+        <input type="text" name="phone"
+               value="{% if patient %}{{ patient.phone }}{% endif %}"
+               required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email"
+               value="{% if patient %}{{ patient.email }}{% endif %}">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Address</label>
+        <textarea name="address">{% if patient %}{{ patient.address }}{% endif %}</textarea>
+      </div>
+    </div>
+
+    <!-- Medical Details -->
+    <div class="section-title">Medical Details</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Department *</label>
+        <select name="department" required>
+          <option value="">-- Select --</option>
+          <option value="Cardiology"  {% if patient.department == 'Cardiology' %}selected{% endif %}>Cardiology</option>
+          <option value="Neurology"   {% if patient.department == 'Neurology' %}selected{% endif %}>Neurology</option>
+          <option value="Orthopedics" {% if patient.department == 'Orthopedics' %}selected{% endif %}>Orthopedics</option>
+          <option value="Gynecology"  {% if patient.department == 'Gynecology' %}selected{% endif %}>Gynecology</option>
+          <option value="Pediatrics"  {% if patient.department == 'Pediatrics' %}selected{% endif %}>Pediatrics</option>
+          <option value="General"     {% if patient.department == 'General' %}selected{% endif %}>General</option>
+          <option value="ENT"         {% if patient.department == 'ENT' %}selected{% endif %}>ENT</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Assigned Doctor *</label>
+        <select name="doctor" required>
+          <option value="">-- Select --</option>
+          {% for doc in doctors %}
+          <option value="{{ doc.id }}"
+            {% if patient.doctor.id == doc.id %}selected{% endif %}>
+            {{ doc.name }} — {{ doc.specialization }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Admission Type</label>
+        <select name="admission_type">
+          <option value="OPD"       {% if patient.admission_type == 'OPD' %}selected{% endif %}>OPD</option>
+          <option value="IPD"       {% if patient.admission_type == 'IPD' %}selected{% endif %}>IPD</option>
+          <option value="Emergency" {% if patient.admission_type == 'Emergency' %}selected{% endif %}>Emergency</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Admission Date</label>
+        <input type="date" name="admission_date"
+               value="{% if patient %}{{ patient.admission_date|date:'Y-m-d' }}{% endif %}">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Symptoms</label>
+        <textarea name="symptoms">{% if patient %}{{ patient.symptoms }}{% endif %}</textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="submit" class="btn">
+        {% if patient %}Update Patient{% else %}Save Patient{% endif %}
+      </button>
+      <a href="{% url 'patient_list' %}" class="btn btn-cancel">Cancel</a>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

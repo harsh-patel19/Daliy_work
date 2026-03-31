@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if doctor %}Edit Doctor{% else %}Add Doctor{% endif %}{% endblock %}
+{% block nav_doctors %}active{% endblock %}
+
+{% block content %}
+<h2>{% if doctor %}Edit Doctor{% else %}Add New Doctor{% endif %}</h2>
+
+<div class="form-box">
+  <form action="
+    {% if doctor %}
+      {% url 'edit_doctor' doctor.id %}
+    {% else %}
+      {% url 'add_doctor' %}
+    {% endif %}
+  " method="POST">
+    {% csrf_token %}
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" name="name"
+               value="{% if doctor %}{{ doctor.name }}{% endif %}"
+               placeholder="e.g. Ramesh Mehta" required>
+      </div>
+      <div class="form-group">
+        <label>Specialization *</label>
+        <select name="specialization" required>
+          <option value="">-- Select --</option>
+          <option value="Cardiology"   {% if doctor.specialization == 'Cardiology' %}selected{% endif %}>Cardiology</option>
+          <option value="Neurology"    {% if doctor.specialization == 'Neurology' %}selected{% endif %}>Neurology</option>
+          <option value="Orthopedics"  {% if doctor.specialization == 'Orthopedics' %}selected{% endif %}>Orthopedics</option>
+          <option value="Gynecology"   {% if doctor.specialization == 'Gynecology' %}selected{% endif %}>Gynecology</option>
+          <option value="Pediatrics"   {% if doctor.specialization == 'Pediatrics' %}selected{% endif %}>Pediatrics</option>
+          <option value="General"      {% if doctor.specialization == 'General' %}selected{% endif %}>General</option>
+          <option value="ENT"          {% if doctor.specialization == 'ENT' %}selected{% endif %}>ENT</option>
+          <option value="Dermatology"  {% if doctor.specialization == 'Dermatology' %}selected{% endif %}>Dermatology</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone *</label>
+        <input type="text" name="phone"
+               value="{% if doctor %}{{ doctor.phone }}{% endif %}"
+               placeholder="98765 43210" required>
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" name="email"
+               value="{% if doctor %}{{ doctor.email }}{% endif %}"
+               placeholder="doctor@hms.com" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Experience (years) *</label>
+        <input type="number" name="experience"
+               value="{% if doctor %}{{ doctor.experience }}{% endif %}"
+               placeholder="5" min="0" required>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="Available" {% if doctor.status == 'Available' %}selected{% endif %}>Available</option>
+          <option value="Busy"      {% if doctor.status == 'Busy' %}selected{% endif %}>Busy</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="submit" class="btn">
+        {% if doctor %}Update Doctor{% else %}Save Doctor{% endif %}
+      </button>
+      <a href="{% url 'doctor_list' %}" class="btn btn-cancel">Cancel</a>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
