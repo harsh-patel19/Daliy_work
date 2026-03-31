@@ -251,3 +251,23 @@
 #         print("pelindrom")
 #     else:
 #         print("Not pelidrom")
+
+
+# list1 = [1,1,2,2,3,4,5]
+# dict ={}
+
+# dict={"1":2,"2":2,"3":1}
+
+# lst = [1, 1, 2, 2, 3, 4, 5]
+
+# result = {}
+
+# for i in lst:
+#     if i in result:
+#         result[i] += 1
+#     else:
+#         result[i] = 1
+
+# print(result)
+
+    
