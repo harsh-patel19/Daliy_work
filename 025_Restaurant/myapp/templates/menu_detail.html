@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ item.name }} — Saffron & Stone{% endblock %}
+
+{% block content %}
+
+<section class="detail-section">
+
+  <!-- BREADCRUMB -->
+  <nav class="breadcrumb">
+    <a href="{% url 'home' %}">Home</a>
+    <span>/</span>
+    <a href="{% url 'menu' %}">Menu</a>
+    <span>/</span>
+    <a href="{% url 'menu' %}?category={{ item.category.slug }}">{{ item.category.name }}</a>
+    <span>/</span>
+    <span>{{ item.name }}</span>
+  </nav>
+
+  <div class="detail-grid">
+
+    <!-- IMAGE -->
+    <div class="detail-image">
+      {% if item.image %}
+        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+      {% else %}
+        <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=900&q=80" alt="{{ item.name }}">
+      {% endif %}
+      {% if item.is_veg %}
+        <div class="detail-veg-tag veg">● Vegetarian</div>
+      {% else %}
+        <div class="detail-veg-tag nonveg">● Non-Vegetarian</div>
+      {% endif %}
+    </div>
+
+    <!-- INFO -->
+    <div class="detail-info">
+      <p class="card-cat" style="margin-bottom:.5rem;">{{ item.category.name }}</p>
+      <h1 class="detail-title">{{ item.name }}</h1>
+
+      {% if item.is_popular %}
+      <span class="detail-badge">★ Popular Choice</span>
+      {% endif %}
+
+      <div class="detail-price-row">
+        {% if item.original_price %}
+        <span class="detail-original-price">₹{{ item.original_price }}</span>
+        {% endif %}
+        <span class="detail-price">₹{{ item.price }}</span>
+        {% if item.original_price %}
+        <span class="detail-discount">{{ item.discount_percent|default:"" }}% off</span>
+        {% endif %}
+      </div>
+
+      <p class="detail-desc">{{ item.description }}</p>
+
+      {% if item.ingredients %}
+      <div class="detail-meta-block">
+        <h4>Ingredients</h4>
+        <p>{{ item.ingredients }}</p>
+      </div>
+      {% endif %}
+
+      {% if item.allergens %}
+      <div class="detail-meta-block">
+        <h4>Allergens</h4>
+        <p>{{ item.allergens }}</p>
+      </div>
+      {% endif %}
+
+      <div class="detail-tags">
+        {% if item.is_spicy %}<span class="tag">🌶 Spicy</span>{% endif %}
+        {% if item.is_gluten_free %}<span class="tag">GF Gluten Free</span>{% endif %}
+        {% if item.serves %}<span class="tag">Serves {{ item.serves }}</span>{% endif %}
+        {% if item.prep_time %}<span class="tag">⏱ {{ item.prep_time }} mins</span>{% endif %}
+      </div>
+
+      <div class="detail-actions">
+        <a href="{% url 'order' %}?item={{ item.pk }}" class="btn-primary">Add to Order</a>
+        <a href="{% url 'menu' %}" class="btn-outline">← Back to Menu</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELATED ITEMS -->
+  {% if related_items %}
+  <div style="margin-top:5rem;">
+    <div class="section-header">
+      <div>
+        <p class="section-tag">You May Also Like</p>
+        <h2>More from <em>{{ item.category.name }}</em></h2>
+      </div>
+      <a href="{% url 'menu' %}?category={{ item.category.slug }}" class="view-all">See all</a>
+    </div>
+    <div class="menu-grid">
+      {% for rel in related_items %}
+      <a href="{% url 'menu_item_detail' rel.pk %}" class="menu-card">
+        <div class="card-img">
+          {% if rel.image %}<img src="{{ rel.image.url }}" alt="{{ rel.name }}">
+          {% else %}<img src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=600&q=80" alt="{{ rel.name }}">{% endif %}
+          {% if rel.is_veg %}<span class="card-veg"></span>{% else %}<span class="card-nonveg"></span>{% endif %}
+        </div>
+        <div class="card-body">
+          <p class="card-cat">{{ rel.category.name }}</p>
+          <h3 class="card-name">{{ rel.name }}</h3>
+          <p class="card-desc">{{ rel.description }}</p>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">₹{{ rel.price }}</div>
+          <span class="add-btn">+</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</section>
+{% endblock %}

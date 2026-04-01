@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Saffron & Stone — Home{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow">Est. 2015 · Surat, Gujarat</p>
+    <h1>Food crafted<br>with <em>intention</em><br>&amp; care.</h1>
+    <p class="hero-desc">Fresh seasonal ingredients, slow-cooked traditions, and a dining experience that feels like home — elevated.</p>
+    <div class="hero-actions">
+      <a href="{% url 'menu' %}" class="btn-primary">Explore Menu</a>
+      <a href="{% url 'order' %}" class="btn-outline">Place an Order</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <div class="hero-img-box">
+      <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80" alt="Signature dish" />
+    </div>
+    <div class="hero-badge">
+      <div class="badge-icon">★</div>
+      <div>
+        <div class="badge-label">Average Rating</div>
+        <div class="badge-value">{{ avg_rating|default:"4.9" }} / 5.0</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-num">{{ total_menu_items|default:"120" }}<span>+</span></div>
+    <div class="stat-label">Menu Items</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">9<span>yr</span></div>
+    <div class="stat-label">Years Serving</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">{{ total_orders|default:"40k" }}<span>+</span></div>
+    <div class="stat-label">Orders Delivered</div>
+  </div>
+</div>
+
+<!-- FEATURED MENU -->
+<section id="featured">
+  <div class="section-header">
+    <div>
+      <p class="section-tag">Our Offerings</p>
+      <h2>Today's <em>Menu</em></h2>
+    </div>
+    <a href="{% url 'menu' %}" class="view-all">View Full Menu</a>
+  </div>
+
+  <div class="menu-grid">
+    {% for item in featured_items %}
+    <a href="{% url 'menu_item_detail' item.pk %}" class="menu-card">
+      <div class="card-img">
+        {% if item.image %}
+          <img src="{{ item.image.url }}" alt="{{ item.name }}">
+        {% else %}
+          <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80" alt="{{ item.name }}">
+        {% endif %}
+        {% if item.is_popular %}<span class="card-badge">Popular</span>{% endif %}
+        {% if item.is_popular %}<span class="card-badge">Chef's Pick</span>{% endif %}
+        {% if item.is_veg %}<span class="card-veg"></span>{% else %}<span class="card-nonveg"></span>{% endif %}
+      </div>
+      <div class="card-body">
+        <p class="card-cat">{{ item.category.name }}</p>
+        <h3 class="card-name">{{ item.name }}</h3>
+        <p class="card-desc">{{ item.description }}</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">
+          {% if item.original_price %}<span>₹{{ item.original_price }}</span>{% endif %}
+          ₹{{ item.price }}
+        </div>
+        <a href="{% url 'order' %}?item={{ item.pk }}" class="add-btn" onclick="event.stopPropagation()">+</a>
+      </div>
+    </a>
+    {% empty %}
+    <!-- Fallback static cards when no DB items -->
+    <a href="{% url 'menu' %}" class="menu-card">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&q=80" alt="Paneer Tikka">
+        <span class="card-badge">Popular</span><span class="card-veg"></span>
+      </div>
+      <div class="card-body">
+        <p class="card-cat">Starters</p>
+        <h3 class="card-name">Paneer Tikka</h3>
+        <p class="card-desc">Marinated cottage cheese grilled in tandoor with bell peppers and spiced yogurt.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span>₹320</span> ₹280</div>
+        <span class="add-btn">+</span>
+      </div>
+    </a>
+    <a href="{% url 'menu' %}" class="menu-card">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80" alt="Dal Makhani">
+        <span class="card-veg"></span>
+      </div>
+      <div class="card-body">
+        <p class="card-cat">Mains</p>
+        <h3 class="card-name">Dal Makhani</h3>
+        <p class="card-desc">Slow-cooked black lentils simmered overnight with butter and a touch of cream.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">₹240</div>
+        <span class="add-btn">+</span>
+      </div>
+    </a>
+    <a href="{% url 'menu' %}" class="menu-card">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=600&q=80" alt="Butter Chicken">
+        <span class="card-badge">Chef's Pick</span><span class="card-nonveg"></span>
+      </div>
+      <div class="card-body">
+        <p class="card-cat">Mains</p>
+        <h3 class="card-name">Butter Chicken</h3>
+        <p class="card-desc">Tender chicken in a rich, velvety tomato-butter sauce — a timeless classic.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">₹360</div>
+        <span class="add-btn">+</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- SPECIALS BANNER -->
+<div class="specials-banner">
+  <div>
+    <p class="section-tag" style="color:var(--accent);margin-bottom:.6rem;font-size:11px;letter-spacing:.14em;text-transform:uppercase;">Limited Time</p>
+    <h2>Weekend <em>Specials</em><br>crafted fresh.</h2>
+    <p>Every Friday to Sunday, our chefs prepare a curated selection of dishes using the finest seasonal produce.</p>
+    <a href="{% url 'specials' %}" class="btn-primary">See All Specials</a>
+  </div>
+  <div>
+    <ul class="specials-list">
+      {% for special in weekend_specials %}
+      <li>
+        <div>
+          <div class="special-name">{{ special.name }}</div>
+          <div class="special-desc">{{ special.description }}</div>
+        </div>
+        <div class="special-price">₹{{ special.price }}</div>
+      </li>
+      {% empty %}
+      <li><div><div class="special-name">Raan-e-Sikandari</div><div class="special-desc">Slow-roasted whole leg of lamb · Serves 3–4</div></div><div class="special-price">₹1,800</div></li>
+      <li><div><div class="special-name">Laal Maas</div><div class="special-desc">Rajasthani fiery red mutton curry</div></div><div class="special-price">₹480</div></li>
+      <li><div><div class="special-name">Thandai Panna Cotta</div><div class="special-desc">Chilled dessert with rose & saffron</div></div><div class="special-price">₹200</div></li>
+      <li><div><div class="special-name">Dum Pukht Biryani</div><div class="special-desc">Sealed pot biryani, open at the table</div></div><div class="special-price">₹650</div></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="section-header">
+    <div>
+      <p class="section-tag">What People Say</p>
+      <h2>Loved by <em>thousands</em></h2>
+    </div>
+  </div>
+  <div class="testimonials-grid">
+    {% for review in reviews %}
+    <div class="testi-card">
+      <div class="stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+      <p class="testi-text">"{{ review.text }}"</p>
+      <div class="testi-author">
+        <div class="author-avatar">{{ review.name|slice:":2"|upper }}</div>
+        <div>
+          <div class="author-name">{{ review.name }}</div>
+          <div class="author-meta">{{ review.location }}</div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"The Dal Makhani is unlike anything I've had. Rich, buttery, deeply satisfying — I order it every week."</p>
+      <div class="testi-author">
+        <div class="author-avatar">PR</div>
+        <div><div class="author-name">Priya Reddy</div><div class="author-meta">Regular customer · Surat</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Ordered the Weekend Special Biryani for a family gathering. Sealed, aromatic, and absolutely stunning at the table."</p>
+      <div class="testi-author">
+        <div class="author-avatar">AM</div>
+        <div><div class="author-name">Arjun Mehta</div><div class="author-meta">Foodie · Adajan</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Delivery was quick, food was hot, and the packaging was thoughtful. Best takeout in the city."</p>
+      <div class="testi-author">
+        <div class="author-avatar">SK</div>
+        <div><div class="author-name">Sneha Kapoor</div><div class="author-meta">Food blogger · Vesu</div></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

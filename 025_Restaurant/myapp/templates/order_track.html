@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Track Order #{{ order.id }} — Saffron & Stone{% endblock %}
+
+{% block content %}
+
+<section class="confirm-section">
+  <div class="confirm-card" style="max-width:560px;">
+
+    <p class="section-tag" style="text-align:center;margin-bottom:.5rem;">Order #{{ order.id|stringformat:"06d" }}</p>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;text-align:center;margin-bottom:0.4rem;">
+      Track your <em style="color:var(--accent);">Order</em>
+    </h1>
+    <p style="text-align:center;color:var(--warm-gray);font-size:14px;margin-bottom:2.5rem;">
+      Placed by {{ order.first_name }} {{ order.last_name }} · {{ order.phone }}
+    </p>
+
+    <!-- PROGRESS TRACKER -->
+    <div class="track-steps">
+      {% with status=order.status %}
+
+      <div class="track-step {% if status in 'confirmed,preparing,ready,out_for_delivery,delivered' %}done{% endif %} {% if status == 'confirmed' %}current{% endif %}">
+        <div class="track-dot"></div>
+        <div class="track-label">
+          <strong>Order Confirmed</strong>
+          <span>We've received your order</span>
+        </div>
+      </div>
+
+      <div class="track-step {% if status in 'preparing,ready,out_for_delivery,delivered' %}done{% endif %} {% if status == 'preparing' %}current{% endif %}">
+        <div class="track-dot"></div>
+        <div class="track-label">
+          <strong>Preparing</strong>
+          <span>Chef is cooking your food</span>
+        </div>
+      </div>
+
+      <div class="track-step {% if status in 'ready,out_for_delivery,delivered' %}done{% endif %} {% if status == 'ready' %}current{% endif %}">
+        <div class="track-dot"></div>
+        <div class="track-label">
+          <strong>Ready</strong>
+          <span>Your order is packed & ready</span>
+        </div>
+      </div>
+
+      {% if order.order_type == 'delivery' %}
+      <div class="track-step {% if status in 'out_for_delivery,delivered' %}done{% endif %} {% if status == 'out_for_delivery' %}current{% endif %}">
+        <div class="track-dot"></div>
+        <div class="track-label">
+          <strong>Out for Delivery</strong>
+          <span>On the way to your address</span>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="track-step {% if status == 'delivered' %}done{% endif %} {% if status == 'delivered' %}current{% endif %}">
+        <div class="track-dot"></div>
+        <div class="track-label">
+          <strong>{% if order.order_type == 'pickup' %}Ready for Pickup{% else %}Delivered{% endif %}</strong>
+          <span>Enjoy your meal!</span>
+        </div>
+      </div>
+
+      {% endwith %}
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="confirm-meta" style="margin-top:2rem;">
+      {% if order.address %}
+      <div class="confirm-row"><span>Deliver to</span><strong>{{ order.address }}</strong></div>
+      {% endif %}
+      <div class="confirm-row"><span>Payment</span><strong>{{ order.get_payment_method_display }}</strong></div>
+      {% if order.total_amount %}
+      <div class="confirm-row"><span>Total</span><strong>₹{{ order.total_amount }}</strong></div>
+      {% endif %}
+    </div>
+
+    <div class="confirm-actions" style="margin-top:2rem;">
+      <a href="{% url 'home' %}" class="btn-outline">Back to Home</a>
+      <a href="{% url 'menu' %}" class="btn-primary">Order Again</a>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

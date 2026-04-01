@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Menu — Saffron & Stone{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="section-tag">Our Offerings</p>
+    <h1>The Full <em>Menu</em></h1>
+    <p class="page-header-desc">Every dish is prepared fresh, with seasonal ingredients sourced locally wherever possible.</p>
+  </div>
+</div>
+
+<!-- MENU BODY -->
+<section>
+
+  <!-- CATEGORY TABS -->
+  <div class="menu-tabs">
+    <a href="{% url 'menu' %}" class="tab {% if not active_category %}active{% endif %}">All</a>
+    {% for cat in categories %}
+    <a href="{% url 'menu' %}?category={{ cat.slug }}" class="tab {% if active_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+    {% empty %}
+    <a href="{% url 'menu' %}?category=starters"  class="tab {% if active_category == 'starters' %}active{% endif %}">Starters</a>
+    <a href="{% url 'menu' %}?category=mains"     class="tab {% if active_category == 'mains' %}active{% endif %}">Mains</a>
+    <a href="{% url 'menu' %}?category=breads"    class="tab {% if active_category == 'breads' %}active{% endif %}">Breads</a>
+    <a href="{% url 'menu' %}?category=desserts"  class="tab {% if active_category == 'desserts' %}active{% endif %}">Desserts</a>
+    <a href="{% url 'menu' %}?category=drinks"    class="tab {% if active_category == 'drinks' %}active{% endif %}">Drinks</a>
+    {% endfor %}
+  </div>
+
+  <!-- SEARCH BAR -->
+  <form method="get" action="{% url 'menu' %}" class="search-bar">
+    {% if active_category %}<input type="hidden" name="category" value="{{ active_category }}">{% endif %}
+    <input type="search" name="q" value="{{ search_query|default:'' }}" placeholder="Search dishes…">
+    <button type="submit">Search</button>
+  </form>
+
+  <!-- VEG FILTER -->
+  <div class="filter-row">
+    <a href="?{% if active_category %}category={{ active_category }}&{% endif %}veg=1" class="filter-pill {% if veg_filter %}active{% endif %}">
+      <span class="card-veg" style="position:static;"></span> Veg Only
+    </a>
+    <a href="?{% if active_category %}category={{ active_category }}{% endif %}" class="filter-pill {% if not veg_filter %}active{% endif %}">All Items</a>
+    <span class="result-count">{{ menu_items|length }} item{{ menu_items|length|pluralize }} found</span>
+  </div>
+
+  <!-- MENU GRID -->
+  <div class="menu-grid" style="margin-top:2rem;">
+    {% for item in menu_items %}
+    <a href="{% url 'menu_item_detail' item.pk %}" class="menu-card">
+      <div class="card-img">
+        {% if item.image %}
+          <img src="{{ item.image.url }}" alt="{{ item.name }}">
+        {% else %}
+          <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80" alt="{{ item.name }}">
+        {% endif %}
+        {% if item.is_popular %}<span class="card-badge">Popular</span>{% endif %}
+        {% if item.is_veg %}<span class="card-veg"></span>{% else %}<span class="card-nonveg"></span>{% endif %}
+      </div>
+      <div class="card-body">
+        <p class="card-cat">{{ item.category.name }}</p>
+        <h3 class="card-name">{{ item.name }}</h3>
+        <p class="card-desc">{{ item.description }}</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">
+          {% if item.original_price %}<span>₹{{ item.original_price }}</span>{% endif %}
+          ₹{{ item.price }}
+        </div>
+        <a href="{% url 'order' %}?item={{ item.pk }}" class="add-btn" onclick="event.stopPropagation()">+</a>
+      </div>
+    </a>
+    {% empty %}
+    <div class="empty-state">
+      <p>No dishes found. <a href="{% url 'menu' %}">Clear filters</a></p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- PAGINATION -->
+  {% if menu_items.has_other_pages %}
+  <div class="pagination">
+    {% if menu_items.has_previous %}
+      <a href="?page={{ menu_items.previous_page_number }}{% if active_category %}&category={{ active_category }}{% endif %}" class="page-btn">← Prev</a>
+    {% endif %}
+    {% for num in menu_items.paginator.page_range %}
+      <a href="?page={{ num }}{% if active_category %}&category={{ active_category }}{% endif %}"
+         class="page-btn {% if menu_items.number == num %}active{% endif %}">{{ num }}</a>
+    {% endfor %}
+    {% if menu_items.has_next %}
+      <a href="?page={{ menu_items.next_page_number }}{% if active_category %}&category={{ active_category }}{% endif %}" class="page-btn">Next →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</section>
+{% endblock %}

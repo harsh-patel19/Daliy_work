@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Order Confirmed — Saffron & Stone{% endblock %}
+
+{% block content %}
+
+<section class="confirm-section">
+  <div class="confirm-card">
+
+    <div class="confirm-icon">✓</div>
+    <h1 class="confirm-title">Order <em>Confirmed!</em></h1>
+    <p class="confirm-sub">Thank you, {{ order.first_name }}. We've received your order and will prepare it right away.</p>
+
+    <div class="confirm-meta">
+      <div class="confirm-row">
+        <span>Order ID</span>
+        <strong>#{{ order.id|stringformat:"06d" }}</strong>
+      </div>
+      <div class="confirm-row">
+        <span>Order Type</span>
+        <strong>{{ order.get_order_type_display }}</strong>
+      </div>
+      <div class="confirm-row">
+        <span>Phone</span>
+        <strong>{{ order.phone }}</strong>
+      </div>
+      {% if order.address %}
+      <div class="confirm-row">
+        <span>Deliver to</span>
+        <strong>{{ order.address }}</strong>
+      </div>
+      {% endif %}
+      <div class="confirm-row">
+        <span>Payment</span>
+        <strong>{{ order.get_payment_method_display }}</strong>
+      </div>
+      <div class="confirm-row">
+        <span>Status</span>
+        <strong class="status-badge">{{ order.get_status_display }}</strong>
+      </div>
+    </div>
+
+    <!-- ORDER ITEMS -->
+    {% if order.items.all %}
+    <div class="confirm-items">
+      <h4>Items Ordered</h4>
+      {% for oi in order.items.all %}
+      <div class="confirm-item-row">
+        <span>{{ oi.menu_item.name }} × {{ oi.quantity }}</span>
+        <span>₹{{ oi.subtotal }}</span>
+      </div>
+      {% endfor %}
+      <div class="confirm-item-row total">
+        <span>Total</span>
+        <span>₹{{ order.total_amount }}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="confirm-eta">
+      <div class="eta-icon">🕐</div>
+      <div>
+        <strong>Estimated time</strong>
+        <span>30–45 minutes</span>
+      </div>
+    </div>
+
+    <div class="confirm-actions">
+      <a href="{% url 'order_track' order.id %}" class="btn-primary">Track My Order</a>
+      <a href="{% url 'menu' %}" class="btn-outline">Order More</a>
+    </div>
+
+    <p class="confirm-note">A confirmation SMS has been sent to {{ order.phone }}</p>
+  </div>
+</section>
+
+{% endblock %}

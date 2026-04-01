@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us — Saffron & Stone{% endblock %}
+
+{% block content %}
+
+<!-- ABOUT HERO -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="section-tag">Our Story</p>
+    <h1>Crafted with <em>love</em>,<br>served with pride.</h1>
+    <p class="page-header-desc">Since 2015, we've been cooking the food that brings people home.</p>
+  </div>
+</div>
+
+<!-- STORY SECTION -->
+<section>
+  <div class="about-grid">
+    <div class="about-img">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80" alt="Our kitchen">
+    </div>
+    <div class="about-text">
+      <p class="section-tag">Who We Are</p>
+      <h2>A kitchen built on <em>tradition</em></h2>
+      <p>Saffron & Stone started as a small family kitchen in Adajan, Surat. What began as cooking for neighbours grew into a full restaurant, driven by one simple belief — that food cooked with patience and the finest ingredients speaks for itself.</p>
+      <p>We work with local farmers, seasonal produce, and recipes passed down through generations. Every dish tells a story. Every plate carries the warmth of the people who made it.</p>
+      <a href="{% url 'menu' %}" class="btn-primary" style="display:inline-block;margin-top:1.5rem;">Explore Our Menu</a>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section style="background:var(--stone);padding:6rem 6vw;">
+  <div class="section-header">
+    <div>
+      <p class="section-tag">What Drives Us</p>
+      <h2>Our <em>Values</em></h2>
+    </div>
+  </div>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">🌿</div>
+      <h3>Fresh & Local</h3>
+      <p>We source produce from local farms and markets. Seasonal menus mean the freshest flavours on your plate.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🔥</div>
+      <h3>Slow Cooking</h3>
+      <p>Many of our dishes are slow-cooked for hours. Good food cannot be rushed — and we never do.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🤝</div>
+      <h3>Community First</h3>
+      <p>We hire locally, support local suppliers, and give back to the Surat community that made us who we are.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">♻️</div>
+      <h3>Sustainable</h3>
+      <p>Eco-friendly packaging, minimal food waste, and a commitment to running a restaurant that cares for the planet.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section>
+  <div class="section-header">
+    <div>
+      <p class="section-tag">The People</p>
+      <h2>Meet the <em>Team</em></h2>
+    </div>
+  </div>
+  <div class="team-grid">
+    {% for member in team %}
+    <div class="team-card">
+      <div class="team-avatar">
+        {% if member.photo %}
+          <img src="{{ member.photo.url }}" alt="{{ member.name }}">
+        {% else %}
+          <div class="avatar-initials">{{ member.name|slice:":2"|upper }}</div>
+        {% endif %}
+      </div>
+      <h3 class="team-name">{{ member.name }}</h3>
+      <p class="team-role">{{ member.role }}</p>
+      <p class="team-bio">{{ member.bio }}</p>
+    </div>
+    {% empty %}
+    <div class="team-card">
+      <div class="team-avatar"><div class="avatar-initials">RV</div></div>
+      <h3 class="team-name">Ramesh Vyas</h3>
+      <p class="team-role">Head Chef & Founder</p>
+      <p class="team-bio">25 years of culinary experience across Gujarat and Rajasthan. The heart and soul of every dish.</p>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar"><div class="avatar-initials">KP</div></div>
+      <h3 class="team-name">Kavita Patel</h3>
+      <p class="team-role">Pastry & Desserts Chef</p>
+      <p class="team-bio">Trained in Mumbai, returned to Surat to bring refined desserts to a homegrown restaurant.</p>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar"><div class="avatar-initials">AS</div></div>
+      <h3 class="team-name">Aryan Shah</h3>
+      <p class="team-role">Restaurant Manager</p>
+      <p class="team-bio">Ensures every guest — whether dining in or ordering online — has a seamless, warm experience.</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

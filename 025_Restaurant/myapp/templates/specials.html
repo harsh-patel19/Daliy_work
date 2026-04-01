@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Specials — Saffron & Stone{% endblock %}
+
+{% block content %}
+
+<div class="page-header" style="background:var(--ink);">
+  <div class="page-header-inner">
+    <p class="section-tag">Limited Time</p>
+    <h1 style="color:#fff;">Weekend <em>Specials</em></h1>
+    <p class="page-header-desc" style="color:rgba(255,255,255,0.55);">
+      Every Friday to Sunday, our chefs craft a curated selection using the finest seasonal produce.
+    </p>
+  </div>
+</div>
+
+<section>
+  <div class="section-header">
+    <div>
+      <p class="section-tag">This Weekend</p>
+      <h2>Chef's <em>Picks</em></h2>
+    </div>
+  </div>
+
+  <div class="menu-grid">
+    {% for item in specials %}
+    <a href="{% url 'menu_item_detail' item.pk %}" class="menu-card">
+      <div class="card-img">
+        {% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.name }}">
+        {% else %}<img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=600&q=80" alt="{{ item.name }}">{% endif %}
+        <span class="card-badge">Special</span>
+        {% if item.is_veg %}<span class="card-veg"></span>{% else %}<span class="card-nonveg"></span>{% endif %}
+      </div>
+      <div class="card-body">
+        <p class="card-cat">{{ item.category.name }}</p>
+        <h3 class="card-name">{{ item.name }}</h3>
+        <p class="card-desc">{{ item.description }}</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">₹{{ item.price }}</div>
+        <a href="{% url 'order' %}?item={{ item.pk }}" class="add-btn" onclick="event.stopPropagation()">+</a>
+      </div>
+    </a>
+    {% empty %}
+    <!-- Static fallback -->
+    <a href="{% url 'order' %}" class="menu-card">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=600&q=80" alt="Biryani">
+        <span class="card-badge">Special</span><span class="card-nonveg"></span>
+      </div>
+      <div class="card-body">
+        <p class="card-cat">Mains</p>
+        <h3 class="card-name">Dum Pukht Biryani</h3>
+        <p class="card-desc">Sealed pot biryani opened at the table — fragrant, layered, unforgettable.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">₹650</div>
+        <span class="add-btn">+</span>
+      </div>
+    </a>
+    <a href="{% url 'order' %}" class="menu-card">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt="Raan">
+        <span class="card-badge">Special</span><span class="card-nonveg"></span>
+      </div>
+      <div class="card-body">
+        <p class="card-cat">Sharing</p>
+        <h3 class="card-name">Raan-e-Sikandari</h3>
+        <p class="card-desc">Slow-roasted whole leg of lamb, serves 3–4 people. A true showstopper.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">₹1,800</div>
+        <span class="add-btn">+</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- AVAILABILITY NOTE -->
+  <div class="specials-note">
+    <div class="note-icon">📅</div>
+    <div>
+      <strong>Available Friday – Sunday only</strong>
+      <p>Specials are limited in quantity and sell out fast. Pre-order by calling <a href="tel:+919876543210">+91 98765 43210</a>.</p>
+    </div>
+  </div>
+
+</section>
+{% endblock %}

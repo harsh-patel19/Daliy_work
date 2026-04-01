@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Saffron & Stone{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+{% load static %}
+<link rel="stylesheet" href="{% static '/main.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="{% url 'home' %}"><span>Saffron</span> & Stone</a>
+  <ul class="nav-links">
+    <li><a href="{% url 'menu' %}" {% if request.resolver_match.url_name == 'menu' %}class="active"{% endif %}>Menu</a></li>
+    <li><a href="{% url 'specials' %}" {% if request.resolver_match.url_name == 'specials' %}class="active"{% endif %}>Specials</a></li>
+    <li><a href="{% url 'about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>About</a></li>
+    <li><a href="{% url 'contact' %}" {% if request.resolver_match.url_name == 'contact' %}class="active"{% endif %}>Contact</a></li>
+    <li><a href="{% url 'order' %}" class="nav-cta">Order Now</a></li>
+  </ul>
+  <button class="nav-hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+</nav>
+
+<!-- MESSAGES -->
+{% if messages %}
+<div class="messages-bar">
+  {% for message in messages %}
+  <div class="message message--{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- PAGE CONTENT -->
+{% block content %}{% endblock %}
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="nav-logo" href="{% url 'home' %}"><span>Saffron</span> & Stone</a>
+      <p>A restaurant built on patience, craft, and the belief that great food brings people together.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Menu</h4>
+      <ul>
+        <li><a href="{% url 'menu' %}?category=starters">Starters</a></li>
+        <li><a href="{% url 'menu' %}?category=mains">Mains</a></li>
+        <li><a href="{% url 'menu' %}?category=breads">Breads</a></li>
+        <li><a href="{% url 'menu' %}?category=desserts">Desserts</a></li>
+        <li><a href="{% url 'menu' %}?category=drinks">Drinks</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Visit Us</h4>
+      <ul>
+        <li><a href="{% url 'contact' %}">Ring Road, Adajan</a></li>
+        <li><a href="#">Surat, Gujarat 395009</a></li>
+        <li><a href="#">Mon–Sun: 11am–11pm</a></li>
+        <li><a href="tel:+919876543210">+91 98765 43210</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="{% url 'about' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© {% now "Y" %} Saffron & Stone. All rights reserved.</span>
+    <span>Made with care in Surat</span>
+  </div>
+</footer>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

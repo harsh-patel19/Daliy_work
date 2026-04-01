@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Place Order — Saffron & Stone{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="section-tag">Online Ordering</p>
+    <h1>Place your <em>Order</em></h1>
+    <p class="page-header-desc">Fresh, hot, and delivered to your door — or ready for pickup in 30 minutes.</p>
+  </div>
+</div>
+
+<section>
+  <div class="order-grid">
+
+    <!-- LEFT: INFO -->
+    <div class="order-info">
+      <ul class="order-details">
+        <li>
+          <span class="detail-icon">🕐</span>
+          <div class="detail-text">
+            <strong>Delivery Time</strong>
+            30–45 minutes to your door
+          </div>
+        </li>
+        <li>
+          <span class="detail-icon">📍</span>
+          <div class="detail-text">
+            <strong>Delivery Area</strong>
+            Within 10 km of Surat city centre
+          </div>
+        </li>
+        <li>
+          <span class="detail-icon">✦</span>
+          <div class="detail-text">
+            <strong>Minimum Order</strong>
+            ₹299 for delivery
+          </div>
+        </li>
+        <li>
+          <span class="detail-icon">☎</span>
+          <div class="detail-text">
+            <strong>Phone Order</strong>
+            +91 98765 43210
+          </div>
+        </li>
+        <li>
+          <span class="detail-icon">💳</span>
+          <div class="detail-text">
+            <strong>Payment</strong>
+            Cash on delivery · UPI · Card
+          </div>
+        </li>
+      </ul>
+
+      <!-- SELECTED ITEM PREVIEW (if coming from menu) -->
+      {% if preselected_item %}
+      <div class="preselect-box">
+        <p class="section-tag" style="margin-bottom:.5rem;">Selected Item</p>
+        <div class="preselect-card">
+          {% if preselected_item.image %}
+            <img src="{{ preselected_item.image.url }}" alt="{{ preselected_item.name }}">
+          {% endif %}
+          <div>
+            <strong>{{ preselected_item.name }}</strong>
+            <span>₹{{ preselected_item.price }}</span>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT: FORM -->
+    <div class="order-form-card">
+      <h3 class="form-title">Your Order Details</h3>
+
+      <form action="{% url 'order_place' %}" method="POST" novalidate>
+        {% csrf_token %}
+
+        <!-- Customer Info -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="first_name"
+                   value="{{ form.first_name.value|default:'' }}"
+                   placeholder="Ravi" required>
+            {% if form.first_name.errors %}
+              <span class="field-error">{{ form.first_name.errors.0 }}</span>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="last_name"
+                   value="{{ form.last_name.value|default:'' }}"
+                   placeholder="Sharma" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone"
+                 value="{{ form.phone.value|default:'' }}"
+                 placeholder="+91 98765 43210" required>
+          {% if form.phone.errors %}<span class="field-error">{{ form.phone.errors.0 }}</span>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email (optional)</label>
+          <input type="email" id="email" name="email"
+                 value="{{ form.email.value|default:'' }}"
+                 placeholder="ravi@email.com">
+        </div>
+
+        <!-- Order Type -->
+        <div class="form-group">
+          <label for="order-type">Order Type</label>
+          <select id="order-type" name="order_type">
+            <option value="delivery" {% if form.order_type.value == 'delivery' %}selected{% endif %}>Delivery</option>
+            <option value="pickup"   {% if form.order_type.value == 'pickup' %}selected{% endif %}>Self Pickup</option>
+            <option value="dine"     {% if form.order_type.value == 'dine' %}selected{% endif %}>Dine In</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="address-field">
+          <label for="address">Delivery Address</label>
+          <input type="text" id="address" name="address"
+                 value="{{ form.address.value|default:'' }}"
+                 placeholder="Flat no, Street, Area, Surat">
+          {% if form.address.errors %}<span class="field-error">{{ form.address.errors.0 }}</span>{% endif %}
+        </div>
+
+        <!-- Items -->
+        <div class="form-group">
+          <label>Select Items <span style="color:var(--warm-gray);font-size:11px;">(hold Ctrl / ⌘ for multiple)</span></label>
+          <select name="items" multiple style="height:130px;">
+            {% for item in menu_items %}
+            <option value="{{ item.pk }}"
+              {% if preselected_item and preselected_item.pk == item.pk %}selected{% endif %}>
+              {{ item.name }} — ₹{{ item.price }}
+            </option>
+            {% empty %}
+            <option value="1">Paneer Tikka — ₹280</option>
+            <option value="2">Dal Makhani — ₹240</option>
+            <option value="3">Butter Chicken — ₹360</option>
+            <option value="4">Hyderabadi Biryani — ₹420</option>
+            <option value="5">Garlic Naan — ₹80</option>
+            <option value="6">Gulab Jamun — ₹120</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Payment -->
+        <div class="form-group">
+          <label for="payment">Payment Method</label>
+          <select id="payment" name="payment_method">
+            <option value="cod">Cash on Delivery</option>
+            <option value="upi">UPI / GPay / PhonePe</option>
+            <option value="card">Credit / Debit Card</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label for="notes">Special Instructions</label>
+          <textarea id="notes" name="notes" placeholder="Allergies, spice level, extra requests…">{{ form.notes.value|default:'' }}</textarea>
+        </div>
+
+        <hr class="form-divider">
+
+        <!-- Summary -->
+        <div class="form-summary">
+          <div class="summary-row"><span>Subtotal</span><span>₹0.00</span></div>
+          <div class="summary-row"><span>Delivery Fee</span><span>₹40.00</span></div>
+          <div class="summary-row"><span>GST (5%)</span><span>₹0.00</span></div>
+          <div class="summary-row total"><span>Total</span><span>₹40.00</span></div>
+        </div>
+
+        <button type="submit" class="submit-btn">Confirm Order →</button>
+        <p class="form-note">Secure checkout · No payment stored on our servers</p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
