@@ -17,6 +17,8 @@ def register(request):
 
 def user_login(request):
     if request.method == "POST":
+
+
         username = request.POST.get("username")
         password = request.POST.get("password")
 
@@ -59,6 +61,7 @@ def student_update(request,id):
             Students.image = request.FILES.get("image")
         Students.save()
         return redirect("student_list")
+    
     return render(request,"student_update.html",{"Students":Students})
 
 
