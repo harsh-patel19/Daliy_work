@@ -72,7 +72,7 @@
 # for i in range(a):
 #     print(fibbanoic(i),end=" ")
 
-rows = int(input("Enter the number : "))
+# rows = int(input("Enter the number : "))
 
 # for i in range(rows ,0 ,-1):
 #     for j in range(i):
