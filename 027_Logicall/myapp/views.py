@@ -4,7 +4,6 @@ from rest_framework.decorators import APIView
 from rest_framework.response import Response
 from myapp.serializers import *
 
-
 # Create your views here.
 def student_list(request):
     if request.method == "POST":
