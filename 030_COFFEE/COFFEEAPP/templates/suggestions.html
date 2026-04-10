@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coffee House – AI Suggestions</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    .suggestions-page { padding: 40px; max-width: 700px; margin: 0 auto; }
+    .suggestions-page h1 { font-size: 2rem; margin-bottom: 8px; }
+
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-top: 24px;
+    }
+    .quiz-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .quiz-card p { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 20px; }
+
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .option-btn {
+      padding: 12px 16px;
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition);
+      text-align: left;
+    }
+    .option-btn:hover, .option-btn.selected {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(200,136,58,0.08);
+    }
+
+    .suggestion-result { display: none; margin-top: 24px; }
+    .suggestion-card {
+      background: linear-gradient(135deg, var(--bg-card2), var(--bg-card));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .sug-emoji { font-size: 4rem; }
+    .sug-info h3 { font-size: 1.2rem; color: var(--accent); margin-bottom: 6px; }
+    .sug-info p { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 14px; }
+
+    .step-indicator {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: var(--transition);
+    }
+    .step-dot.active { background: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="{%url 'index'%}">☕ Coffee House</a>
+  <ul class="nav-links">
+    <li><a href="{%url 'index'%}">Home</a></li>
+    <li><a href="{%url 'menu'%}">Menu</a></li>
+    <li><a href="{%url 'about'%}" class="active">About</a></li>
+    <li><a href="{%url 'contact'%}">Contact</a></li>
+    <li><a href="{%url 'booking'%}">Booking</a></li>
+    <li><a href="{%url 'login'%}">Login</a></li>
+  </ul>
+  <a class="nav-cart btn" href="{%url 'cart'%}">🛒 Cart <span class="cart-badge">0</span></a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="suggestions-page">
+  <h1>AI Suggestions</h1>
+  <p class="section-subtitle">Let us recommend the perfect coffee for you!</p>
+
+  <div class="quiz-card" id="quizCard">
+    <div class="step-indicator" id="stepDots"></div>
+    <h3 id="questionTitle"></h3>
+    <p id="questionDesc"></p>
+    <div class="options-grid" id="optionsGrid"></div>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextStep()" style="display:none">Next →</button>
+  </div>
+
+  <div class="suggestion-result" id="result">
+    <h2 style="margin-bottom:16px;">Based on your taste, we recommend:</h2>
+    <div class="suggestion-card">
+      <div class="sug-emoji" id="resEmoji">☕</div>
+      <div class="sug-info">
+        <h3 id="resName">Cappuccino</h3>
+        <p id="resDesc">A perfect blend of bold espresso and creamy foam.</p>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="addSuggestion()">Try It</button>
+          <button class="btn btn-outline" onclick="resetQuiz()">Restart Quiz</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px">
+      <h3 style="font-size:1rem;margin-bottom:14px;">You might also like:</h3>
+      <div id="alsoLike" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Coffee House. All rights reserved.</p>
+</footer>
+
+<script src="/static/js/script.js"></script>
+<script>
+const questions = [
+  { title: 'How do you like your coffee?', desc: 'Choose your preferred strength.', options: ['🌟 Strong & Bold', '🥛 Creamy & Smooth', '🍫 Sweet & Rich', '🍵 Light & Mild'] },
+  { title: 'What\'s your mood today?', desc: 'Pick what best matches how you feel.', options: ['⚡ Need Energy', '😌 Relax & Unwind', '🎉 Treat Myself', '🌿 Stay Healthy'] },
+  { title: 'Any flavor preference?', desc: 'What flavors do you enjoy?', options: ['🍫 Chocolate', '🍮 Caramel', '☕ Classic Coffee', '🍋 Something Fruity'] },
+];
+
+const recommendations = {
+  '0,0,0': { name:'Espresso', emoji:'☕', desc:'Bold, intense, and pure. A single shot of pure energy.', price:2.50 },
+  '0,0,2': { name:'Americano', emoji:'☕', desc:'Espresso with hot water — clean and powerful.', price:2.75 },
+  '1,0,2': { name:'Cappuccino', emoji:'🥛', desc:'Creamy foam meets rich espresso — a classic favorite.', price:3.50 },
+  '1,1,1': { name:'Caramel Latte', emoji:'🍮', desc:'Sweet caramel and smooth espresso — a perfect treat.', price:4.50 },
+  '2,2,0': { name:'Mocha', emoji:'🍫', desc:'Chocolate and espresso in perfect harmony.', price:4.25 },
+  '1,2,1': { name:'Caramel Latte', emoji:'🍮', desc:'Indulge in sweet caramel bliss.', price:4.50 },
+  default: { name:'Latte', emoji:'🍵', desc:'Smooth steamed milk with a gentle espresso shot — universally loved.', price:3.75 },
+};
+
+const alsoLikeMap = {
+  'Espresso': ['Americano','Cappuccino'],
+  'Americano': ['Espresso','Latte'],
+  'Cappuccino': ['Latte','Mocha'],
+  'Caramel Latte': ['Mocha','Latte'],
+  'Mocha': ['Caramel Latte','Cappuccino'],
+  'Latte': ['Cappuccino','Caramel Latte'],
+};
+
+const menuFull = { 'Espresso':2.50,'Americano':2.75,'Cappuccino':3.50,'Latte':3.75,'Mocha':4.25,'Caramel Latte':4.50 };
+const menuEmoji = { 'Espresso':'☕','Americano':'☕','Cappuccino':'🥛','Latte':'🍵','Mocha':'🍫','Caramel Latte':'🍮' };
+
+let step = 0;
+let answers = [];
+let selectedIdx = -1;
+let currentRec = null;
+
+function renderStep() {
+  const q = questions[step];
+  document.getElementById('questionTitle').textContent = q.title;
+  document.getElementById('questionDesc').textContent = q.desc;
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = q.options.map((opt, i) => `
+    <button class="option-btn" onclick="selectOption(${i}, this)">${opt}</button>
+  `).join('');
+  // dots
+  const dots = document.getElementById('stepDots');
+  dots.innerHTML = questions.map((_, i) => `<div class="step-dot ${i <= step ? 'active':''}"></div>`).join('');
+  document.getElementById('nextBtn').style.display = 'none';
+  selectedIdx = -1;
+}
+
+function selectOption(idx, btn) {
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedIdx = idx;
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextStep() {
+  if (selectedIdx < 0) return;
+  answers.push(selectedIdx);
+  step++;
+  if (step >= questions.length) {
+    showResult();
+  } else {
+    renderStep();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  const key = answers.join(',');
+  const rec = recommendations[key] || recommendations['default'];
+  currentRec = rec;
+  document.getElementById('resEmoji').textContent = rec.emoji;
+  document.getElementById('resName').textContent = rec.name;
+  document.getElementById('resDesc').textContent = rec.desc;
+
+  const also = alsoLikeMap[rec.name] || ['Cappuccino','Latte'];
+  document.getElementById('alsoLike').innerHTML = also.map(name => `
+    <div class="card" style="display:flex;align-items:center;gap:12px;cursor:pointer" onclick="Cart.add('${name}', ${menuFull[name]||3.50}, '${menuEmoji[name]||'☕'}')">
+      <span style="font-size:1.8rem">${menuEmoji[name]||'☕'}</span>
+      <div>
+        <div style="font-size:0.9rem;color:var(--text-primary)">${name}</div>
+        <div style="font-size:0.82rem;color:var(--accent)">$${(menuFull[name]||3.50).toFixed(2)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addSuggestion() {
+  if (currentRec) Cart.add(currentRec.name, currentRec.price, currentRec.emoji);
+}
+
+function resetQuiz() {
+  step = 0; answers = []; selectedIdx = -1;
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  renderStep();
+}
+
+renderStep();
+</script>
+</body>
+</html>

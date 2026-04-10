@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coffee House – Admin Panel</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    .admin-layout {
+      display: flex;
+      min-height: calc(100vh - 64px - 56px);
+    }
+
+    /* SIDEBAR */
+    .admin-sidebar {
+      width: 200px;
+      background: var(--nav-bg);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      flex-shrink: 0;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+    .sidebar-item:hover, .sidebar-item.active {
+      color: var(--accent);
+      background: rgba(200,136,58,0.08);
+      border-left-color: var(--accent);
+    }
+    .sidebar-item .icon { font-size: 1.1rem; }
+
+    /* MAIN CONTENT */
+    .admin-main { flex: 1; padding: 30px; overflow-y: auto; }
+    .admin-main h2 { font-size: 1.5rem; margin-bottom: 24px; }
+
+    /* STATS GRID */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .stat-card:hover { border-color: var(--accent); }
+    .stat-card .stat-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .stat-card .stat-val { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+    .stat-card .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* TABLES */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      text-align: left;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(200,136,58,0.04); }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-pending { background: rgba(255,165,0,0.15); color: orange; }
+    .status-confirmed { background: rgba(76,175,80,0.15); color: #4caf50; }
+    .status-completed { background: rgba(200,136,58,0.15); color: var(--accent); }
+
+    .panel-section { display: none; }
+    .panel-section.active { display: block; }
+
+    .table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .table-wrap .table-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* LOGIN GUARD */
+    .admin-login {
+      max-width: 380px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+
+    @media(max-width:768px){
+      .admin-layout { flex-direction: column; }
+      .admin-sidebar { width: 100%; display: flex; overflow-x: auto; padding: 0; }
+      .sidebar-item { flex-direction: column; font-size: 0.75rem; padding: 12px 14px; gap: 4px; border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+      .sidebar-item.active { border-bottom-color: var(--accent); border-left: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="{%url 'index'%}">☕ Coffee House</a>
+  <ul class="nav-links">
+    <li><a href="{%url 'index'%}">Home</a></li>
+    <li><a href="{%url 'menu'%}">Menu</a></li>
+    <li><a href="{%url 'about'%}" class="active">About</a></li>
+    <li><a href="{%url 'contact'%}">Contact</a></li>
+    <li><a href="{%url 'booking'%}">Booking</a></li>
+    <li><a href="{%url 'login'%}">Login</a></li>
+  </ul>
+  <a class="nav-cart btn" href="{%url 'cart'%}">🛒 Cart <span class="cart-badge">0</span></a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- ADMIN LOGIN GUARD -->
+<div id="adminLoginGuard" style="display:none; padding:40px 20px; max-width:400px; margin:0 auto;">
+  <div class="card">
+    <h2 style="margin-bottom:20px; font-size:1.4rem;">Admin Login</h2>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="adminUser" placeholder="admin"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="adminPass" placeholder="admin123"/>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="adminLogin()">Login</button>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-top:12px;text-align:center">Use: admin / admin123</p>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" style="display:none;">
+  <div class="admin-layout">
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar">
+      <div class="sidebar-item active" onclick="switchAdmin('dashboard')"><span class="icon">📊</span> Dashboard</div>
+      <div class="sidebar-item" onclick="switchAdmin('orders')"><span class="icon">📦</span> Orders</div>
+      <div class="sidebar-item" onclick="switchAdmin('menu')"><span class="icon">☕</span> Menu</div>
+      <div class="sidebar-item" onclick="switchAdmin('users')"><span class="icon">👥</span> Users</div>
+      <div class="sidebar-item" onclick="switchAdmin('reviews')"><span class="icon">⭐</span> Reviews</div>
+      <div class="sidebar-item" onclick="switchAdmin('bookings')"><span class="icon">📅</span> Bookings</div>
+      <div class="sidebar-item" onclick="adminLogout()"><span class="icon">🚪</span> Logout</div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+
+      <!-- DASHBOARD -->
+      <div class="panel-section active" id="dashboardPanel">
+        <h2>Dashboard</h2>
+        <div class="stats-cards" id="statsCards"></div>
+
+        <div class="table-wrap">
+          <div class="table-header">Recent Orders</div>
+          <div style="overflow-x:auto"><table class="data-table" id="recentOrdersTable">
+            <thead><tr><th>Customer</th><th>Item</th><th>Total</th><th>Status</th></tr></thead>
+            <tbody id="recentOrdersBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="panel-section" id="ordersPanel">
+        <h2>All Orders</h2>
+        <div class="table-wrap">
+          <div style="overflow-x:auto"><table class="data-table">
+            <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Items</th><th>Total</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- MENU -->
+      <div class="panel-section" id="menuPanel">
+        <h2>Menu Items</h2>
+        <div class="table-wrap">
+          <div style="overflow-x:auto"><table class="data-table" id="menuTable">
+            <thead><tr><th>Item</th><th>Category</th><th>Price</th></tr></thead>
+            <tbody id="menuBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="panel-section" id="usersPanel">
+        <h2>Registered Users</h2>
+        <div class="table-wrap">
+          <div style="overflow-x:auto"><table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="panel-section" id="reviewsPanel">
+        <h2>Customer Reviews</h2>
+        <div id="reviewsAdmin"></div>
+      </div>
+
+      <!-- BOOKINGS -->
+      <div class="panel-section" id="bookingsPanel">
+        <h2>Table Bookings</h2>
+        <div class="table-wrap">
+          <div style="overflow-x:auto"><table class="data-table">
+            <thead><tr><th>Name</th><th>Phone</th><th>Date</th><th>Time</th><th>Guests</th><th>Status</th></tr></thead>
+            <tbody id="bookingsBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Coffee House. All rights reserved.</p>
+</footer>
+
+<script src="/static/js/script.js"></script>
+<script>
+const ADMIN_CREDS = { user: 'admin', pass: 'admin123' };
+
+const menuItems = [
+  { name:'Espresso',price:2.50,cat:'Coffee'},{ name:'Cappuccino',price:3.50,cat:'Coffee'},
+  { name:'Latte',price:3.75,cat:'Coffee'},{ name:'Mocha',price:4.25,cat:'Coffee'},
+  { name:'Americano',price:2.75,cat:'Coffee'},{ name:'Caramel Latte',price:4.50,cat:'Coffee'},
+  { name:'Croissant',price:2.50,cat:'Snacks'},{ name:'Muffin',price:2.00,cat:'Snacks'},
+  { name:'Cheesecake',price:4.75,cat:'Desserts'},{ name:'Brownie',price:3.25,cat:'Desserts'},
+  { name:'Iced Tea',price:2.25,cat:'Beverages'},{ name:'Lemonade',price:2.75,cat:'Beverages'},
+];
+
+function adminLogin() {
+  const u = document.getElementById('adminUser').value;
+  const p = document.getElementById('adminPass').value;
+  if (u === ADMIN_CREDS.user && p === ADMIN_CREDS.pass) {
+    localStorage.setItem('ch_admin', '1');
+    initAdmin();
+  } else {
+    showToast('Invalid credentials!');
+  }
+}
+
+function adminLogout() {
+  localStorage.removeItem('ch_admin');
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('adminLoginGuard').style.display = 'block';
+}
+
+function initAdmin() {
+  document.getElementById('adminLoginGuard').style.display = 'none';
+  document.getElementById('adminPanel').style.display = 'block';
+  renderDashboard();
+  renderOrders();
+  renderMenu();
+  renderUsers();
+  renderReviews();
+  renderBookings();
+}
+
+function switchAdmin(section) {
+  document.querySelectorAll('.panel-section').forEach(p => p.classList.remove('active'));
+  document.getElementById(section + 'Panel').classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach((item, i) => {
+    item.classList.remove('active');
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(section)) item.classList.add('active');
+  });
+}
+
+function renderDashboard() {
+  const orders = JSON.parse(localStorage.getItem('ch_orders') || '[]');
+  const users = JSON.parse(localStorage.getItem('ch_users') || '[]');
+  const bookings = JSON.parse(localStorage.getItem('ch_bookings') || '[]');
+  const revenue = orders.reduce((s, o) => s + parseFloat(o.total || 0), 0);
+
+  document.getElementById('statsCards').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">☕</div><div class="stat-val">${menuItems.length}</div><div class="stat-label">Menu Items</div></div>
+    <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-val">${orders.length}</div><div class="stat-label">Orders</div></div>
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val">${users.length}</div><div class="stat-label">Users</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-val">$${revenue.toFixed(0)}</div><div class="stat-label">Revenue</div></div>
+  `;
+
+  const tbody = document.getElementById('recentOrdersBody');
+  const recent = [...orders].reverse().slice(0,5);
+  if (recent.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted)">No orders yet</td></tr>';
+  } else {
+    tbody.innerHTML = recent.map(o => `
+      <tr>
+        <td>${o.name}</td>
+        <td>${(o.items||[]).map(i=>i.name).join(', ').substring(0,30)}</td>
+        <td style="color:var(--accent)">$${o.total}</td>
+        <td><span class="status-badge status-${(o.status||'pending').toLowerCase()}">${o.status||'Pending'}</span></td>
+      </tr>
+    `).join('');
+  }
+}
+
+function renderOrders() {
+  const orders = JSON.parse(localStorage.getItem('ch_orders') || '[]');
+  const tbody = document.getElementById('ordersBody');
+  if (orders.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">No orders yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...orders].reverse().map(o => `
+    <tr>
+      <td style="color:var(--text-muted)">#${o.id.toString().slice(-4)}</td>
+      <td>${o.name}</td>
+      <td>${o.phone}</td>
+      <td>${(o.items||[]).map(i=>i.name+'x'+i.qty).join(', ')}</td>
+      <td style="color:var(--accent)">$${o.total}</td>
+      <td>${o.date}</td>
+      <td><span class="status-badge status-${(o.status||'pending').toLowerCase()}">${o.status||'Pending'}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderMenu() {
+  document.getElementById('menuBody').innerHTML = menuItems.map(m => `
+    <tr>
+      <td>${m.name}</td>
+      <td><span class="badge">${m.cat}</span></td>
+      <td style="color:var(--accent)">$${m.price.toFixed(2)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderUsers() {
+  const users = JSON.parse(localStorage.getItem('ch_users') || '[]');
+  const tbody = document.getElementById('usersBody');
+  if (users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--text-muted)">No registered users</td></tr>';
+    return;
+  }
+  tbody.innerHTML = users.map(u => `
+    <tr><td>${u.name}</td><td>${u.email}</td></tr>
+  `).join('');
+}
+
+function renderReviews() {
+  const saved = JSON.parse(localStorage.getItem('ch_reviews') || '[]');
+  const defaults = [
+    { name:'John D.', rating:4, text:'Amazing coffee and great ambiance!', date:'2025-06-10' },
+    { name:'Sarah M.', rating:5, text:'I love their cappuccino!', date:'2025-06-08' },
+    { name:'Mike T.', rating:5, text:'Best place to work and relax.', date:'2025-06-05' },
+  ];
+  const all = [...saved, ...defaults];
+  document.getElementById('reviewsAdmin').innerHTML = all.map(r => `
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <strong>${r.name}</strong>
+        <span class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+      </div>
+      <p style="font-size:0.88rem;color:var(--text-secondary)">${r.text}</p>
+      <small style="color:var(--text-muted)">${r.date}</small>
+    </div>
+  `).join('');
+}
+
+function renderBookings() {
+  const bookings = JSON.parse(localStorage.getItem('ch_bookings') || '[]');
+  const tbody = document.getElementById('bookingsBody');
+  if (bookings.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">No bookings yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...bookings].reverse().map(b => `
+    <tr>
+      <td>${b.name}</td>
+      <td>${b.phone}</td>
+      <td>${b.date}</td>
+      <td>${b.time}</td>
+      <td>${b.guests}</td>
+      <td><span class="status-badge status-confirmed">${b.status||'Confirmed'}</span></td>
+    </tr>
+  `).join('');
+}
+
+// Check login state
+if (localStorage.getItem('ch_admin')) {
+  initAdmin();
+} else {
+  document.getElementById('adminLoginGuard').style.display = 'block';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coffee House – Menu</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    .menu-header { padding: 40px 40px 0; }
+    .menu-header h1 { font-size: 2rem; margin-bottom: 6px; }
+
+    .category-tabs {
+      display: flex;
+      gap: 10px;
+      padding: 24px 40px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .menu-list { padding: 0 40px 40px; }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:hover { background: var(--bg-card); border-radius: var(--radius-sm); }
+
+    .item-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3d2010, #5a3018);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .item-info { flex: 1; }
+    .item-info h3 { font-size: 1rem; color: var(--text-primary); margin-bottom: 3px; }
+    .item-info p { font-size: 0.82rem; color: var(--text-muted); }
+    .item-price { font-size: 1rem; color: var(--accent); font-weight: 700; min-width: 50px; text-align: right; }
+
+    .add-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: inherit;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .add-btn:hover { background: var(--accent-hover); transform: scale(1.04); }
+
+    @media(max-width:768px){
+      .menu-header, .category-tabs, .menu-list { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="{%url 'index'%}">☕ Coffee House</a>
+  <ul class="nav-links">
+    <li><a href="{%url 'index'%}">Home</a></li>
+    <li><a href="{%url 'menu'%}">Menu</a></li>
+    <li><a href="{%url 'about'%}" class="active">About</a></li>
+    <li><a href="{%url 'contact'%}">Contact</a></li>
+    <li><a href="{%url 'booking'%}">Booking</a></li>
+    <li><a href="{%url 'login'%}">Login</a></li>
+  </ul>
+  <a class="nav-cart btn" href="{%url 'cart'%}">🛒 Cart <span class="cart-badge">0</span></a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="menu-header container" style="padding-top:40px;">
+  <h1 class="section-title">Our Menu</h1>
+  <p class="section-subtitle">Freshly brewed for you every day</p>
+</div>
+
+<div class="category-tabs container">
+  <button class="tab-btn active" data-cat="all">All</button>
+  <button class="tab-btn" data-cat="coffee">Coffee</button>
+  <button class="tab-btn" data-cat="snacks">Snacks</button>
+  <button class="tab-btn" data-cat="desserts">Desserts</button>
+  <button class="tab-btn" data-cat="beverages">Beverages</button>
+</div>
+
+<div class="menu-list container" id="menuList"></div>
+
+<footer>
+  <p>© 2025 Coffee House. All rights reserved.</p>
+</footer>
+
+<script src="/static/js/script.js"></script>
+<script>
+const menuItems = [
+  { name:'Espresso',     price:2.50, cat:'coffee',    icon:'☕', desc:'Rich & bold single shot' },
+  { name:'Cappuccino',   price:3.50, cat:'coffee',    icon:'🥛', desc:'Creamy foam with espresso' },
+  { name:'Latte',        price:3.75, cat:'coffee',    icon:'🍵', desc:'Smooth steamed milk & espresso' },
+  { name:'Mocha',        price:4.25, cat:'coffee',    icon:'🍫', desc:'Chocolate & espresso blend' },
+  { name:'Americano',    price:2.75, cat:'coffee',    icon:'☕', desc:'Espresso with hot water' },
+  { name:'Caramel Latte',price:4.50, cat:'coffee',    icon:'🍮', desc:'Sweet caramel latte perfection' },
+  { name:'Croissant',    price:2.50, cat:'snacks',    icon:'🥐', desc:'Buttery, flaky pastry' },
+  { name:'Muffin',       price:2.00, cat:'snacks',    icon:'🧁', desc:'Freshly baked blueberry muffin' },
+  { name:'Sandwich',     price:4.50, cat:'snacks',    icon:'🥪', desc:'Club sandwich with veggies' },
+  { name:'Cheesecake',   price:4.75, cat:'desserts',  icon:'🍰', desc:'Classic New York cheesecake' },
+  { name:'Brownie',      price:3.25, cat:'desserts',  icon:'🍫', desc:'Fudgy chocolate brownie' },
+  { name:'Tiramisu',     price:5.00, cat:'desserts',  icon:'🎂', desc:'Italian classic with espresso' },
+  { name:'Iced Tea',     price:2.25, cat:'beverages', icon:'🧋', desc:'Refreshing cold brew tea' },
+  { name:'Lemonade',     price:2.75, cat:'beverages', icon:'🍋', desc:'Fresh squeezed lemonade' },
+  { name:'Hot Chocolate',price:3.25, cat:'beverages', icon:'🍵', desc:'Rich creamy hot chocolate' },
+];
+
+let activeCat = 'all';
+
+function renderMenu() {
+  const list = document.getElementById('menuList');
+  const filtered = activeCat === 'all' ? menuItems : menuItems.filter(i => i.cat === activeCat);
+  list.innerHTML = filtered.map(item => `
+    <div class="menu-item">
+      <div class="item-icon">${item.icon}</div>
+      <div class="item-info">
+        <h3>${item.name}</h3>
+        <p>${item.desc}</p>
+      </div>
+      <span class="item-price">$${item.price.toFixed(2)}</span>
+      <button class="add-btn" onclick="Cart.add('${item.name}', ${item.price}, '${item.icon}')">+ Add</button>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    renderMenu();
+  });
+});
+
+renderMenu();
+</script>
+</body>
+</html>

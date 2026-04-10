@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coffee House – AI Chatbot</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    .chatbot-page { padding: 40px; max-width: 700px; margin: 0 auto; }
+    .chatbot-page h1 { font-size: 2rem; margin-bottom: 8px; }
+
+    .chat-window {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 24px;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .bot-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #8b4513);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .bot-info h3 { font-size: 0.95rem; color: var(--text-primary); }
+    .bot-status { font-size: 0.78rem; color: #4caf50; }
+
+    .chat-messages {
+      height: 420px;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .msg { display: flex; gap: 10px; max-width: 80%; }
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--border-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .msg.bot .msg-avatar { background: linear-gradient(135deg, var(--accent), #8b4513); }
+
+    .msg-bubble {
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .msg.bot .msg-bubble {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-top-left-radius: 4px;
+    }
+    .msg.user .msg-bubble {
+      background: var(--accent);
+      color: #fff;
+      border-top-right-radius: 4px;
+    }
+
+    .chat-input-area {
+      border-top: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input-area input {
+      flex: 1;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 10px 18px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    .chat-input-area input:focus { border-color: var(--accent); }
+    .send-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .send-btn:hover { background: var(--accent-hover); transform: scale(1.08); }
+
+    .quick-btns { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 16px 12px; }
+    .quick-btn {
+      padding: 6px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+    .quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .typing { display: flex; gap: 4px; padding: 10px 14px; align-items: center; }
+    .typing span { width: 7px; height: 7px; background: var(--text-muted); border-radius: 50%; animation: bounce 1.2s infinite; }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-8px)} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="{%url 'index'%}">☕ Coffee House</a>
+  <ul class="nav-links">
+    <li><a href="{%url 'index'%}">Home</a></li>
+    <li><a href="{%url 'menu'%}">Menu</a></li>
+    <li><a href="{%url 'about'%}" class="active">About</a></li>
+    <li><a href="{%url 'contact'%}">Contact</a></li>
+    <li><a href="{%url 'booking'%}">Booking</a></li>
+    <li><a href="{%url 'login'%}">Login</a></li>
+  </ul>
+  <a class="nav-cart btn" href="{%url 'cart'%}">🛒 Cart <span class="cart-badge">0</span></a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="chatbot-page">
+  <h1>AI Chatbot</h1>
+  <p class="section-subtitle">Chat with our AI assistant for help, recommendations, and more.</p>
+
+  <div class="chat-window">
+    <div class="chat-header">
+      <div class="bot-avatar">🤖</div>
+      <div class="bot-info">
+        <h3>AI Assistant</h3>
+        <div class="bot-status">● Online</div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot">
+        <div class="msg-avatar">🤖</div>
+        <div class="msg-bubble">Hello! How can I help you today? I can help with our menu, hours, reservations, or recommendations! ☕</div>
+      </div>
+    </div>
+
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="sendQuick('What\'s your best coffee?')">Best coffee?</button>
+      <button class="quick-btn" onclick="sendQuick('Show me the menu')">Menu</button>
+      <button class="quick-btn" onclick="sendQuick('What are your hours?')">Hours</button>
+      <button class="quick-btn" onclick="sendQuick('I want to book a table')">Book table</button>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMsg()"/>
+      <button class="send-btn" onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Coffee House. All rights reserved.</p>
+</footer>
+
+<script src="/static/js/script.js"></script>
+<script>
+const botReplies = {
+  'menu': "Our menu has Coffee, Snacks, Desserts, and Beverages! Popular items: Espresso ($2.50), Cappuccino ($3.50), Latte ($3.75), Mocha ($4.25). <a href='menu.html' style='color:var(--accent)'>See full menu →</a>",
+  'best coffee': "Our customers absolutely love the Cappuccino! It's perfectly balanced with rich espresso and creamy foam. The Caramel Latte is also a fan favorite! ☕",
+  'hours': "We're open Monday–Friday: 7am–9pm, and Saturday–Sunday: 8am–10pm. Come visit us! 🕐",
+  'book': "You can book a table on our <a href='booking.html' style='color:var(--accent)'>Booking page</a>! Just fill in your name, date, time, and number of guests.",
+  'price': "Our coffee starts from $2.50 for Espresso and goes up to $4.50 for specialty drinks. Great quality at great prices!",
+  'delivery': "Yes, we offer delivery! Just add items to your cart, go to checkout, and enter your address. Your coffee will arrive hot!",
+  'recommend': "Based on popular orders, I'd recommend the Caramel Latte — a perfect blend of sweet caramel and smooth espresso. Or try our Cappuccino for a classic!",
+  'cappuccino': "Our Cappuccino is $3.50 — creamy foam layered over rich espresso. One of our best sellers! Want to <a href='menu.html' style='color:var(--accent)'>order now</a>?",
+  'default': "I'm here to help! You can ask me about our menu, prices, hours, table booking, or coffee recommendations. ☕"
+};
+
+function getBotReply(text) {
+  const t = text.toLowerCase();
+  if (t.includes('menu') || t.includes('show')) return botReplies['menu'];
+  if (t.includes('best') || t.includes('popular')) return botReplies['best coffee'];
+  if (t.includes('hour') || t.includes('open') || t.includes('time')) return botReplies['hours'];
+  if (t.includes('book') || t.includes('table') || t.includes('reservation')) return botReplies['book'];
+  if (t.includes('price') || t.includes('cost') || t.includes('how much')) return botReplies['price'];
+  if (t.includes('deliver')) return botReplies['delivery'];
+  if (t.includes('recommend') || t.includes('suggest')) return botReplies['recommend'];
+  if (t.includes('cappuccino')) return botReplies['cappuccino'];
+  return botReplies['default'];
+}
+
+function appendMsg(text, type) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg ${type}`;
+  div.innerHTML = `
+    <div class="msg-avatar">${type === 'bot' ? '🤖' : '👤'}</div>
+    <div class="msg-bubble">${text}</div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'typingIndicator';
+  div.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  appendMsg(text, 'user');
+  showTyping();
+  setTimeout(() => {
+    document.getElementById('typingIndicator')?.remove();
+    appendMsg(getBotReply(text), 'bot');
+  }, 900);
+}
+
+function sendQuick(text) {
+  document.getElementById('chatInput').value = text;
+  sendMsg();
+}
+</script>
+</body>
+</html>

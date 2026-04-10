@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coffee House – Cart</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    .cart-page { padding: 40px; max-width: 700px; margin: 0 auto; }
+    .cart-page h1 { font-size: 2rem; margin-bottom: 28px; }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+    }
+    .item-emoji { font-size: 2rem; width: 48px; text-align: center; }
+    .item-details { flex: 1; }
+    .item-details h3 { font-size: 1rem; color: var(--text-primary); }
+    .item-details span { font-size: 0.85rem; color: var(--text-secondary); }
+    .qty-controls { display: flex; align-items: center; gap: 10px; }
+    .qty-btn {
+      width: 28px; height: 28px;
+      background: var(--border);
+      border: none;
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .qty-btn:hover { background: var(--accent); }
+    .qty-num { font-size: 0.95rem; min-width: 20px; text-align: center; }
+    .item-total { font-size: 1rem; color: var(--accent); font-weight: 700; min-width: 60px; text-align: right; }
+    .remove-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+      padding: 4px;
+    }
+    .remove-btn:hover { color: var(--danger); }
+
+    .cart-summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+    }
+    .cart-actions { display: flex; gap: 12px; margin-top: 20px; }
+    .cart-actions .btn { flex: 1; text-align: center; }
+
+    .empty-cart { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty-cart .icon { font-size: 4rem; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="{%url 'index'%}">☕ Coffee House</a>
+  <ul class="nav-links">
+    <li><a href="{%url 'index'%}">Home</a></li>
+    <li><a href="{%url 'menu'%}">Menu</a></li>
+    <li><a href="{%url 'about'%}" class="active">About</a></li>
+    <li><a href="{%url 'contact'%}">Contact</a></li>
+    <li><a href="{%url 'booking'%}">Booking</a></li>
+    <li><a href="{%url 'login'%}">Login</a></li>
+  </ul>
+  <a class="nav-cart btn" href="{%url 'cart'%}">🛒 Cart <span class="cart-badge">0</span></a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="cart-page">
+  <h1>Your Cart</h1>
+  <div id="cartItems"></div>
+  <div id="cartSummary"></div>
+</div>
+
+<footer>
+  <p>© 2025 Coffee House. All rights reserved.</p>
+</footer>
+
+<script src="/static/js/script.js"></script>
+<script>
+function renderCart() {
+  const itemsDiv = document.getElementById('cartItems');
+  const summaryDiv = document.getElementById('cartSummary');
+
+  if (Cart.items.length === 0) {
+    itemsDiv.innerHTML = `
+      <div class="empty-cart">
+        <div class="icon">🛒</div>
+        <h3>Your cart is empty</h3>
+        <p style="margin:12px 0 24px">Add some delicious coffee to get started!</p>
+        <a href="menu.html" class="btn btn-primary">Browse Menu</a>
+      </div>`;
+    summaryDiv.innerHTML = '';
+    return;
+  }
+
+  itemsDiv.innerHTML = Cart.items.map(item => `
+    <div class="cart-item">
+      <div class="item-emoji">${item.img || '☕'}</div>
+      <div class="item-details">
+        <h3>${item.name}</h3>
+        <span>$${item.price.toFixed(2)} each</span>
+      </div>
+      <div class="qty-controls">
+        <button class="qty-btn" onclick="changeQty('${item.name}', -1)">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
+      </div>
+      <span class="item-total">$${(item.price * item.qty).toFixed(2)}</span>
+      <button class="remove-btn" onclick="removeItem('${item.name}')">✕</button>
+    </div>
+  `).join('');
+
+  const tax = Cart.total() * 0.08;
+  summaryDiv.innerHTML = `
+    <div class="cart-summary">
+      <div class="summary-row"><span>Subtotal</span><span>$${Cart.total().toFixed(2)}</span></div>
+      <div class="summary-row"><span>Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
+      <div class="summary-total"><span>Total</span><span>$${(Cart.total() + tax).toFixed(2)}</span></div>
+    </div>
+    <div class="cart-actions">
+      <a href="menu.html" class="btn btn-outline">Continue Shopping</a>
+      <a href="order.html" class="btn btn-primary">Checkout</a>
+    </div>
+  `;
+}
+
+function changeQty(name, delta) {
+  Cart.updateQty(name, delta);
+  renderCart();
+}
+
+function removeItem(name) {
+  Cart.remove(name);
+  renderCart();
+}
+
+renderCart();
+</script>
+</body>
+</html>

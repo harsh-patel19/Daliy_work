@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coffee House – Login / Signup</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    .auth-page {
+      min-height: calc(100vh - 64px - 56px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 400px;
+      padding: 32px;
+    }
+    .auth-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: inherit;
+    }
+    .auth-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .auth-title { font-size: 1.5rem; margin-bottom: 6px; text-align: center; }
+    .auth-sub { font-size: 0.85rem; color: var(--text-secondary); text-align: center; margin-bottom: 24px; }
+
+    .social-login {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+    .social-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .divider {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 18px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content:'';
+      position:absolute;
+      top:50%;
+      width: 38%;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider::before { left:0; }
+    .divider::after { right:0; }
+
+    .auth-switch { text-align:center; font-size:0.85rem; color:var(--text-muted); margin-top:18px; }
+    .auth-switch a { color:var(--accent); cursor:pointer; text-decoration:none; }
+
+    .panel { display:none; }
+    .panel.active { display:block; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="{%url 'index'%}">☕ Coffee House</a>
+  <ul class="nav-links">
+    <li><a href="{%url 'index'%}">Home</a></li>
+    <li><a href="{%url 'menu'%}">Menu</a></li>
+    <li><a href="{%url 'about'%}" class="active">About</a></li>
+    <li><a href="{%url 'contact'%}">Contact</a></li>
+    <li><a href="{%url 'booking'%}">Booking</a></li>
+    <li><a href="{%url 'login'%}">Login</a></li>
+  </ul>
+  <a class="nav-cart btn" href="{%url 'cart'%}">🛒 Cart <span class="cart-badge">0</span></a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Login</button>
+      <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div class="panel active" id="loginPanel">
+      <h2 class="auth-title">Welcome Back!</h2>
+      <p class="auth-sub">Login to your account</p>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••"/>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Login</button>
+
+      <div class="divider">Or continue with</div>
+      <div class="social-login">
+        <button class="social-btn">🇬 Google</button>
+        <button class="social-btn">🔵 Facebook</button>
+        <button class="social-btn">🐦 Twitter</button>
+      </div>
+      <p class="auth-switch">Don't have an account? <a onclick="switchTab('signup')">Sign Up</a></p>
+    </div>
+
+    <!-- SIGNUP PANEL -->
+    <div class="panel" id="signupPanel">
+      <h2 class="auth-title">Create Account</h2>
+      <p class="auth-sub">Join us today!</p>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signupName" name="full_name" placeholder="Your full name"/>
+      </div>
+      <div class="form-group">
+        <label>email</label>
+        <input type="email" id="signupEmail" name="email" placeholder="your@email.com"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signupPass" name="password" placeholder="Create a password"/>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%" onclick="doSignup()">Create Account</button>
+      <p class="auth-switch">Already have an account? <a onclick="switchTab('login')">Login</a></p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Coffee House. All rights reserved.</p>
+</footer>
+
+<script src="/static/js/script.js"></script>
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup'));
+  });
+  document.getElementById('loginPanel').classList.toggle('active', tab === 'login');
+  document.getElementById('signupPanel').classList.toggle('active', tab === 'signup');
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('Fill in all fields'); return; }
+  if (Auth.login(email, pass)) {
+    showToast('Login successful! Welcome back.');
+    setTimeout(() => window.location.href = "{%url 'index'%}", 1200);
+  } else {
+    showToast('Invalid email or password.');
+  }
+}
+
+function doSignup() {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass = document.getElementById('signupPass').value;
+  if (!name || !email || !pass) { showToast('Fill in all fields'); return; }
+  if (Auth.signup(name, email, pass)) {
+    showToast('Account created! Welcome!');
+    setTimeout(() => window.location.href = "{%url 'login'%}", 1200);
+  } else {
+    showToast('Email already registered!');
+  }
+}
+</script>
+</body>
+</html>

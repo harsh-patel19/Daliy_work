@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coffee House – Reviews</title>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    .reviews-page { padding: 40px; max-width: 750px; margin: 0 auto; }
+    .reviews-page h1 { font-size: 2rem; margin-bottom: 8px; }
+
+    .review-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: var(--transition);
+    }
+    .review-card:hover { border-color: var(--border-light); }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .reviewer-info { display: flex; align-items: center; gap: 12px; }
+    .reviewer-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #8b4513);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem; color: #fff;
+    }
+    .reviewer-name { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+    .review-date { font-size: 0.78rem; color: var(--text-muted); }
+    .review-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
+
+    .add-review {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-top: 32px;
+    }
+    .add-review h3 { font-size: 1.1rem; margin-bottom: 18px; }
+
+    .star-picker { display: flex; gap: 6px; margin-bottom: 16px; }
+    .star-pick {
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: var(--border-light);
+      transition: var(--transition);
+    }
+    .star-pick.selected, .star-pick:hover { color: var(--accent); }
+
+    .rating-stats {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .overall-rating { text-align: center; }
+    .overall-rating .big { font-size: 3rem; font-weight: 700; color: var(--accent); }
+    .overall-rating .stars { font-size: 1.2rem; }
+    .overall-rating p { font-size: 0.8rem; color: var(--text-muted); }
+    .bar-chart { flex: 1; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 0.8rem; color: var(--text-muted); }
+    .bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="{%url 'index'%}">☕ Coffee House</a>
+  <ul class="nav-links">
+    <li><a href="{%url 'index'%}">Home</a></li>
+    <li><a href="{%url 'menu'%}">Menu</a></li>
+    <li><a href="{%url 'about'%}" class="active">About</a></li>
+    <li><a href="{%url 'contact'%}">Contact</a></li>
+    <li><a href="{%url 'booking'%}">Booking</a></li>
+    <li><a href="{%url 'login'%}">Login</a></li>
+  </ul>
+  <a class="nav-cart btn" href="{%url 'cart'%}">🛒 Cart <span class="cart-badge">0</span></a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="reviews-page">
+  <h1>What Our Customers Say</h1>
+  <p class="section-subtitle" style="margin-bottom:24px;">Real reviews from real coffee lovers</p>
+
+  <div class="rating-stats">
+    <div class="overall-rating">
+      <div class="big">4.7</div>
+      <div class="stars">★★★★★</div>
+      <p>Based on 248 reviews</p>
+    </div>
+    <div class="bar-chart">
+      <div class="bar-row"><span>5★</span><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><span>72%</span></div>
+      <div class="bar-row"><span>4★</span><div class="bar-track"><div class="bar-fill" style="width:18%"></div></div><span>18%</span></div>
+      <div class="bar-row"><span>3★</span><div class="bar-track"><div class="bar-fill" style="width:6%"></div></div><span>6%</span></div>
+      <div class="bar-row"><span>2★</span><div class="bar-track"><div class="bar-fill" style="width:2%"></div></div><span>2%</span></div>
+      <div class="bar-row"><span>1★</span><div class="bar-track"><div class="bar-fill" style="width:2%"></div></div><span>2%</span></div>
+    </div>
+  </div>
+
+  <div id="reviewList"></div>
+
+  <div class="add-review">
+    <h3>Leave a Review</h3>
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="rvName" placeholder="Your name"/>
+    </div>
+    <label style="font-size:0.85rem;color:var(--text-secondary);display:block;margin-bottom:8px;">Rating</label>
+    <div class="star-picker" id="starPicker">
+      <span class="star-pick" data-val="1">★</span>
+      <span class="star-pick" data-val="2">★</span>
+      <span class="star-pick" data-val="3">★</span>
+      <span class="star-pick" data-val="4">★</span>
+      <span class="star-pick" data-val="5">★</span>
+    </div>
+    <div class="form-group">
+      <label>Your Review</label>
+      <textarea id="rvText" rows="3" placeholder="Share your experience..."></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Coffee House. All rights reserved.</p>
+</footer>
+
+<script src="/static/js/script.js"></script>
+<script>
+let selectedRating = 5;
+
+const defaultReviews = [
+  { name:'John D.',   rating:4, text:'Amazing coffee and great ambiance! Love coming here every morning.',   date:'2025-06-10' },
+  { name:'Sarah M.',  rating:5, text:'I love their cappuccino! Best one in the city, hands down.',           date:'2025-06-08' },
+  { name:'Mike T.',   rating:5, text:'Best place to work and relax. The WiFi is fast and the coffee is top notch.', date:'2025-06-05' },
+  { name:'Priya R.',  rating:4, text:'Lovely vibe. The mocha was divine. Staff is very friendly.',           date:'2025-06-03' },
+];
+
+function getReviews() {
+  const saved = JSON.parse(localStorage.getItem('ch_reviews') || '[]');
+  return [...saved, ...defaultReviews];
+}
+
+function renderReviews() {
+  const list = document.getElementById('reviewList');
+  const reviews = getReviews();
+  list.innerHTML = reviews.map(r => `
+    <div class="review-card">
+      <div class="review-header">
+        <div class="reviewer-info">
+          <div class="reviewer-avatar">${r.name[0]}</div>
+          <div>
+            <div class="reviewer-name">${r.name}</div>
+            <div class="review-date">${r.date}</div>
+          </div>
+        </div>
+        <div class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+      </div>
+      <p class="review-text">${r.text}</p>
+    </div>
+  `).join('');
+}
+
+// Star picker
+document.querySelectorAll('.star-pick').forEach(star => {
+  star.addEventListener('click', () => {
+    selectedRating = parseInt(star.dataset.val);
+    document.querySelectorAll('.star-pick').forEach((s, i) => {
+      s.classList.toggle('selected', i < selectedRating);
+    });
+  });
+});
+// Default all stars selected
+document.querySelectorAll('.star-pick').forEach(s => s.classList.add('selected'));
+
+function submitReview() {
+  const name = document.getElementById('rvName').value.trim();
+  const text = document.getElementById('rvText').value.trim();
+  if (!name || !text) { showToast('Please fill all fields!'); return; }
+
+  const reviews = JSON.parse(localStorage.getItem('ch_reviews') || '[]');
+  reviews.unshift({ name, rating: selectedRating, text, date: new Date().toISOString().split('T')[0] });
+  localStorage.setItem('ch_reviews', JSON.stringify(reviews));
+  document.getElementById('rvName').value = '';
+  document.getElementById('rvText').value = '';
+  renderReviews();
+  showToast('Review submitted! Thank you.');
+}
+
+renderReviews();
+</script>
+</body>
+</html>
