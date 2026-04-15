@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form action="{%url 'index'%}" method="post" enctype="multipart/form-data">
+
+        {%csrf_token%}
+
+        <label for="category">category</label>
+        <select name="category" id="category">
+            <option value="">select categories</option>
+            {%for Category in Categorys%}
+            <option value="{{Category.id}}">{{Category.name}}</option>
+            {%endfor%}
+        </select><br><br>
+        
+        name:<input type="text" name="name" ><br><br>
+        price:<input type="text" name="price"><br><br>
+        quntity:<input type="text" name="quantity"><br><br>
+
+        <input type="file" name="image"><br><br>
+
+        <input type="submit"><br><br>
+    </form>
+
+    <hr>
+    <table>
+        <tr>
+            <th>category</th>
+            <th>name</th>
+            <th>price</th>
+            <th>quntity</th>
+            <th>image</th>
+            <th colspan="2">action</th>
+        </tr>
+
+        {%for product in products%}
+            <tr>
+                <td>{{product.category}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.price}}</td>
+                <td>{{product.quntity}}</td>
+                <td><img src="media/{{product.image}}" alt="media/{{product.image}}" width="100px" height="100px"></td>
+                <td><a href="">update</a></td>
+                <td><a href="">delete</a></td>
+            </tr>
+        {%endfor%}
+    </table>
+</body>
+</html>
