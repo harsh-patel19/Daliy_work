@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>EMPLOYEE MANANGEMNT SYSTEM</h2>
+     <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        NAME: <input type="text" name="name"><br><br>
+        EMAIL: <input type="text" name="email"><br><br>
+        AGE: <input type="number" name="age"><br><br>
+        IMAGE: <input type="file" name="image"><br><br>
+
+        <button type="submit"> SUMBIT </button>
+     </form>
+     <hr>
+     <h2 align="center">EMPLOYEE DEATIS</h2>
+     <table border="5" align="center">
+        <tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>AGE</th>
+            <th>IMAGE</th>
+            <th>ACTION</th>
+        </tr>
+        {% for Employees in Employees %}
+        <tr>
+            <td>{{Employees.id}}</td>
+            <td>{{Employees.name}}</td>
+            <td>{{Employees.email}}</td>
+            <td>{{Employees.age}}</td>
+            <td>
+                {% if Employees.image %}
+                    <img src="{{Employees.image.url}}" width="100">
+                {% else %}
+                    No IMAGE:
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'Employees_update' Employees.id %}">EDIT</a>
+                <a href="{% url 'Employees_delete' Employees.id %}">DELETE</a>
+            </td>
+        </tr>
+        {% endfor %}
+     </table>
+</body>
+</html>

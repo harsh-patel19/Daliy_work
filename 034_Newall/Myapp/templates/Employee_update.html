@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>EMPLOYEE MANANGEMNT SYSTEM</h2>
+     <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        NAME: <input type="text" name="name" value="{{Employees.name}}"><br><br>
+        EMAIL: <input type="text" name="email" value="{{Employees.email}}"><br><br>
+        AGE: <input type="number" name="age" value="{{Employees.age}}"><br><br>
+        {% if Employees.image %}
+                <img src="{{Employees.image.url}}" width="100"><br><br>
+        {% endif %}
+        
+        IMAGE: <input type="file" name="image"><br><br>
+
+        <button type="submit"> UPDATE </button>
+     </form>
+</body>
+</html>

@@ -35,6 +35,10 @@ def user_login(request):
     return render(request,"login.html")
 
 
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
 
 def index(request):
     products = Product.objects.all()

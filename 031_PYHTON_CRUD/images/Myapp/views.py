@@ -24,14 +24,10 @@ def student_update(request,id):
         Students.name = request.POST.get("name")
         Students.email = request.POST.get("email")
         Students.age = request.POST.get("age")
-        
-        if request.FILES.get("image"):
-            # Delete old image if exists
-            if Students.image and os.path.isfile(Students.image.path):
-                os.remove(Students.image.path)
 
-            # Always assign new image (OUTSIDE delete block)
-            Students.image = request.FILES["image"]
+        if request.FILES.get("image"):
+            Students.image = request.FILES.get("image")
+        
         Students.save()
         return redirect("student_list")
     
