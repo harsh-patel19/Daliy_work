@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+     <h2>EMPLOYEE UPDATE FORM</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        name: <input type="text" name="name" value="{{Employees.name}}"><br><br>
+        dept: <input type="text" name="dept" value="{{Employees.dept}}"><br><br>
+        salary: <input type="number" name="salary" value="{{Employees.salary}}"><br><br>
+
+        {% if Employees.profile %}
+            <img src="{{Employees.profile.url}}" width="100"><br><br>
+        {% endif %}
+        
+        profile: <input type="file" name="profile"><br><br>
+
+        <input type="submit">
+    </form>
+</body>
+</html>

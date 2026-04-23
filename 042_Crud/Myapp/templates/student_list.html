@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>STUDENT MANGEMNET</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        NAME: <input type="text" name="name"><br><br>
+        EMAIL: <input type="text" name="email"><br><br>
+        AGE: <input type="number" name="age"><br><br>
+        IMAGE: <input type="file" name="image"><br><br>
+
+        <button type="submit">ADD</button>
+    </form>
+    <hr>
+    <h2 align="center">STUDENT DEATILS</h2>
+    <table border="5">
+        <tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>AGE</th>
+            <th>IMAGE</th>
+            <th>ACTION</th>
+        </tr>
+        {% for Students in Students %}
+        <tr>
+            <td>{{Students.name}}</td>
+            <td>{{Students.email}}</td>
+            <td>{{Students.age}}</td>
+            {% if Students.image %}
+            <td>
+                <img src="{{ Students.image.url }}" width="100">
+            {% else %}
+                No IMAGE:
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

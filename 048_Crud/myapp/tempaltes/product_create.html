@@ -1,0 +1,11 @@
+<h2>Create Product</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Name"><br><br>
+    <textarea name="description" placeholder="Description"></textarea><br><br>
+    <input type="number" name="price" placeholder="Price"><br><br>
+    <input type="text" name="category" placeholder="Category"><br><br>
+
+    <button type="submit">Save</button>
+</form>

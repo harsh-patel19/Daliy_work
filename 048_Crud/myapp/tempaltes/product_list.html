@@ -1,0 +1,30 @@
+<h2>Product List</h2>
+
+<form method="POST">
+    <input type="text" name="search" placeholder="Search product">
+    <input type="text" name="category" placeholder="Filter by category">
+    <button type="submit">Search</button>
+</form>
+
+<a href="/create/">Add Product</a>
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for p in products %}
+    <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.price }}</td>
+        <td>{{ p.category }}</td>
+        <td>
+            <a href="/update/{{ p.id }}">Edit</a>
+            <a href="/delete/{{ p.id }}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

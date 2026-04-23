@@ -12,6 +12,7 @@
 # print(t[:3])    # (1, 2, 3)
 
 # t = (1,2,3)
+
  
 # for i in t:
 #     print(i)
