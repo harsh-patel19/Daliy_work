@@ -1,0 +1,37 @@
+<h2>Student List</h2>
+
+<a href="/logout/">Logout</a><br><br>
+
+<form method="GET">
+    <input type="text" name="search" placeholder="Search">
+    <input type="text" name="course" placeholder="Course">
+    <button type="submit">Filter</button>
+</form>
+
+<a href="/create/">Add Student</a>
+
+<table border="1">
+<tr>
+<th>Name</th><th>Email</th><th>Age</th><th>Course</th><th>Image</th><th>Action</th>
+</tr>
+
+{% for s in students %}
+<tr>
+<td>{{ s.name }}</td>
+<td>{{ s.email }}</td>
+<td>{{ s.age }}</td>
+<td>{{ s.course }}</td>
+<td>
+{% if s.image %}
+    <img src="{{ s.image.url }}"  width="100">
+{% else %}
+    no image:
+{% endif %}
+</td>
+<td>
+    <a href="{% url 'update' s.id %}">Edit</a>
+    <a href="{% url 'delete' s.id %}">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</table>

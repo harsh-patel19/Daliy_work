@@ -1,0 +1,11 @@
+<h2>Add Student</h2>
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+Name: <input type="text" name="name"><br>
+Email:<input type="email" name="email"><br>
+AGE:<input type="number" name="age"><br>
+COURSE:<input type="text" name="course"><br>
+IMAGE:<input type="file" name="image"><br>
+<button type="submit">Save</button>
+</form> 
