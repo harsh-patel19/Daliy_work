@@ -32,3 +32,26 @@
 # values()Returns all values
 # items() Returns key-value pairs
 # update() Merge dictionaries
+
+
+# d = {"a":1,"b":2,"c":1,"d":3,"e":3,"f":2}
+
+# count = {}
+
+# for i in d.values():
+#     if i in count:
+#         count[i] += 1
+#     else:
+#         count[i] =1
+# print(count)
+
+
+
+# d = {"a":1,"b":2,"c":1,"d":3,"e":3,"f":2}
+
+# new ={}
+
+# for i,j in d.items():
+#     if j not in new.values():
+#         new[i] = j 
+# print(new)

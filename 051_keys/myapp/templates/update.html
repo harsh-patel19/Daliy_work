@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>PRODUCT DETAILS</h3>
+    <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    category :<select name="category">
+    <option value="">Select Category</option>
+    
+    {% for c in category %}
+        <option value="{{ c.id }}"
+        {% if products.category.id == c.id %}selected{% endif %}>
+            {{ c.name }}
+        </option>
+    {% endfor %}
+</select><br>
+    <br>
+    name: <input type="text" name="name" value="{{products.name}}"><br><br>
+    decrib: <input type="text" name="decrib" value="{{products.decrib}}"><br><br>
+    price: <input type="number" name="price" value="{{products.price}}"><br><br>
+    qty: <input type="number" name="qty" value="{{products.qty}}"><br><br>
+
+    {% if products.image %}
+        <img src="{{ products.image.url }}" width="100" height="100"><br><br>
+    {% endif %}
+
+    new image: <input type="file" name="image"><br><br>
+    <button type="submit">Add</button>
+    </form>

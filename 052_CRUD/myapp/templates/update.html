@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>STUDENT MANAGEMNT SYSTEM</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        NAME: <input type="text" name="name" value="{{students.name}}"><br><br>
+        EMAIL: <input type="text" name="email" value="{{students.email}}"><br><br>
+        DATE_OF_BIRTH: <input type="date" name="birth_of_date" value="{{ students.birth_of_date|date:'Y-m-d' }}"><br><br>
+
+        {% if students.image %}
+            <img src="{{ students.image.url }}" width="100" height="100"><br><br>
+        {% endif %}
+        NEW IMAGE: <input type="file" name="image"><br><br>
+
+        <button type="submit">update</button>
+    </form>

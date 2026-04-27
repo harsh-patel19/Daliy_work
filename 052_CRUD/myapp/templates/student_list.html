@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>STUDENT MANAGEMNT SYSTEM</h3>
+    <form method="GET" enctype="multipart/form-data">
+        search: <input type="text" name="search">
+
+        <button type="submit">submit</button>
+    </form><br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        NAME: <input type="text" name="name"><br><br>
+        EMAIL: <input type="text" name="email"><br><br>
+        DATE_OF_BIRTH: <input type="date" name="birth_of_date"><br><br>
+        IMAGE: <input type="file" name="image"><br><br>
+
+        <button type="submit">SUbmit</button>
+    </form>
+    <hr>
+    <hr>
+    <h3 align="center">STUDENT DATA</h3>
+    <table align="center" border="3">
+        <tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>DATE_OF_BIRTH</th>
+            <th>IMAGE</th>
+            <th>ACTION</th>
+        </tr>
+        {% for s in students %}
+        <tr>
+            <td>{{s.name}}</td>
+            <td>{{s.email}}</td>
+            <td>{{s.birth_of_date}}</td>
+            <td>
+            {% if s.image %}
+                <img src="{{ s.image.url }}" width="100" height="100">
+            {% else %}
+                no image:
+            {% endif %}
+            </td>
+        <td>
+            <a href="{% url 'update' s.id %}">edit</a>
+            <a href="{% url 'delete' s.id %}">delete</a>
+        </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div>
+        {% if students.has_previous %}
+            <a href="?page={{ students.pervious_page_number }}">perivou</a>
+        {% endif %}
+        <span>{{students.number}}</span>
+
+        {% if students.has_next %}
+            <a href="?page={{ students.next_page_number }}">next</a>
+        {% endif %}
+    </div>
+</body>
+</html>
