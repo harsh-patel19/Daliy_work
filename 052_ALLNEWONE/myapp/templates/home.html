@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <h3>PRODUCT MANAGEMNET FROM</h3>
+   <form method="GET" enctype="multipart/form-data">
+    search : <input type="text" name="search"><br><br>
+    price: <input type="text" name="price"><br><br>
+    
+    <button type="submit">SUBMIT</button>
+   </form>
+   
+   <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+        Name: <input type="text" name="name"><br><br>
+        Price: <input type="number" name="price"><br><br>
+        QTY: <input type="number" name="qty"><br><br>
+        MANUDATE: <input type="date" name="manudate"><br><br>
+        ENDDATE: <input type="date" name="enddate"><br><br>
+        IMAGE: <input type="file" name="image"><br><br>
+        
+        <button type="submit">SUBMIT</button>
+   </form>
+   <hr>
+   <hr>
+   <hr>
+   <h3 align="center">*LIST OF DATA*</h3>
+   <table align="center" border="3">
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>QTY</th>
+        <th>MANUDATE</th>
+        <th>ENDDATE</th>
+        <th>IMAGE</th>
+        <th>ACTION</th>
+    </tr>
+    {% for p in products %}
+    <tr>
+        <td>{{p.name}}</td>
+        <td>{{p.price}}</td>
+        <td>{{p.qty}}</td>
+        <td>{{p.manudate}}</td>
+        <td>{{p.enddate}}</td>
+        <td>
+        {% if p.image %}
+            <img src="{{ p.image.url }}" width="100" height="100">
+        {% else %}
+            no image:
+        {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'update' p.id %}">EDIT</a>
+            <a href="{% url 'delete' p.id %}">DELETE</a>
+        </td>
+    </tr>
+    {% endfor %}
+   </table>
+   <div>
+    {% if products.has_previous %}
+        <a href="?page={{ products.previous_page_number }}">PREVIOUS</a>
+    {% endif %}
+    <span>{{ products.number }}</span>
+    {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}">NEXT</a>
+    {% endif %}
+   </div>
+</body>
+</html>
