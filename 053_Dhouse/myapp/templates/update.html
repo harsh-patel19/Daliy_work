@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>update from</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        name: <input type="text" name="name" value="{{students.name}}"><br><br>
+        email: <input type="email" name="email" value="{{students.email}}"><br><br>
+        phone_number: <input type="number" name="phone_number" value="{{students.phone_number}}"><br><br>
+
+        <button type="submit">update</button>
+    </form>
