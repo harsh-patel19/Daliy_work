@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    </form>
+    <h3>STUDENT MANAGEMNET SYSTEM</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        Name: <input type="text" name="name"><br><br>
+        Email: <input type="text" name="email"><br><br>
+        age: <input type="number" name="age"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+    <h3 align="center">DEATILS ALL</h3>
+    <table border="2" align="center">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>age</th>
+            <th>action</th>
+        </tr>
+        {% for s in students %}
+        <tr>
+            <td>{{s.name}}</td>
+            <td>{{s.email}}</td>
+            <td>{{s.age}}</td>
+            <td>
+                <a href="{% url 'update' s.id %}">edit</a>
+                <a href="{% url 'delete' s.id %}">delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

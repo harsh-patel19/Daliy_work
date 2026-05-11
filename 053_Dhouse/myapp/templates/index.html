@@ -6,7 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <form method="GET">
+        <input type="text" name="search" placeholder="search name">
+        <button type="submit">search</button>
+    </form>
     <h2>Student from</h2>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}

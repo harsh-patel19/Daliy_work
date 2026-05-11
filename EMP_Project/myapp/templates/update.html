@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Update Employee</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input type="text" name="name" value="{{ employee.name }}">
+    <br><br>
+
+    <input type="email" name="email" value="{{ employee.email }}">
+    <br><br>
+
+    <input type="number" name="age" value="{{ employee.age }}">
+    <br><br>
+
+    <select name="role">
+        <option value="admin">Admin</option>
+        <option value="employee">Employee</option>
+    </select>
+
+    <br><br>
+
+    <input type="file" name="image">
+
+    <br><br>
+
+    <button type="submit">Update</button>
+</form>
+
+{% endblock %}
