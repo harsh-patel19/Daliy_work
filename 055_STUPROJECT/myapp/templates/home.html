@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+</head>
+<body>
+
+    <h2>STUDENT MANAGEMENT SYSTEM</h2>
+
+    <a href="{% url 'logout' %}">Logout</a>
+
+    <hr>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        Name:
+        <input type="text" name="name">
+        <br><br>
+
+        Email:
+        <input type="email" name="email">
+        <br><br>
+
+        Age:
+        <input type="number" name="age">
+        <br><br>
+
+        Role:
+        <select name="role">
+
+            <option value="teacher">Teacher</option>
+
+            <option value="student">Student</option>
+
+        </select>
+
+        <br><br>
+
+        Image:
+        <input type="file" name="image">
+
+        <br><br>
+
+        <button type="submit">ADD STUDENT</button>
+
+    </form>
+
+    <hr>
+
+    <form method="GET">
+
+        <input type="text" name="search" placeholder="Search Student">
+
+        <button type="submit">Search</button>
+
+    </form>
+
+    <br>
+
+    <table border="2" cellpadding="10">
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Image</th>
+
+            <th>Name</th>
+
+            <th>Email</th>
+
+            <th>Age</th>
+
+            <th>Role</th>
+
+            <th>Action</th>
+
+        </tr>
+
+        {% for s in students %}
+
+        <tr>
+
+            <td>{{ s.id }}</td>
+
+            <td>
+
+                {% if s.image %}
+
+                    <img src="{{ s.image.url }}" width="80">
+
+                {% endif %}
+
+            </td>
+
+            <td>{{ s.name }}</td>
+
+            <td>{{ s.email }}</td>
+
+            <td>{{ s.age }}</td>
+
+            <td>{{ s.role }}</td>
+
+            <td>
+
+                <a href="{% url 'update' s.id %}">Edit</a>
+
+                <a href="{% url 'delete' s.id %}">Delete</a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</body>
+</html>
