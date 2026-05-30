@@ -48,6 +48,6 @@
 
 # Convert tuple to list
 
-t = (10,20,30)
-l = list(t)
-print(l)
+# t = (10,20,30)
+# l = list(t)
+# print(l)
