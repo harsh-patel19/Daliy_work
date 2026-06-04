@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>**Product Form**</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        Name: <input type="text" name="name"><br><br>
+        Qty: <input type="text" name="qty"><br><br>
+        Price: <input type="number" name="price"><br><br>
+        Image: <input type="file" name="image"><br><br>
+
+        <button type="submit">ADD</button>
+    </form>
+    <h2 align="center">Product Deatils</h2>
+    <table border="2" align="center">
+        <tr>
+            <th>Name</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Image</th>
+            <th>Action</th>
+        </tr>
+        {% for p in Products %}
+        <tr>
+            <td>{{p.name}}</td>
+            <td>{{p.qty}}</td>
+            <td>{{p.price}}</td>
+            {% if p.image %}
+            <td>
+                <img src="{{ p.image }}" width="100" height="100">
+            {% else %}
+                no image:
+            </td>
+
+            {% endif %}
+            <td>
+                <a href="{% url 'update' p.id %}">Edit</a>
+                <a href="{% url 'delete' p.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
