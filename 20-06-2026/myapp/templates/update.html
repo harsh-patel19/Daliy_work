@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>UPDATE SYSTEM</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        Name: <input type="text" name="name" value="{{products.name}}"><br><br>
+        Qty: <input type="number" name="qty" value="{{products.qty}}"><br><br>
+        Price: <input type="number" name="price" value="{{products.price}}"><br><br>
+
+        {% if products.image %}
+            <img src="{{products.image.url}}" width="100" height="100"><br><br>
+            
+        {% endif %}
+            Image: <input type="file" name="image"><br><br>
+
+        <button type="submit">Update</button>
+    </form>

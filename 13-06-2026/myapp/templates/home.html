@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Studnet Management System</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        name: <input type="text" name="name"><br><br>
+        email: <input type="text" name="email"><br><br>
+        age: <input type="number" name="age"><br><br>
+        image: <input type="file" name="image"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+    <table>
+        <tr>    
+            <th>name</th>
+            <th>email</th>
+            <th>age</th>
+            <th>image</th>
+            <th>action</th>
+        </tr>
+        {% for s in students %}
+        <tr>
+            <td>{{s.name}}</td>
+            <td>{{s.email}}</td>
+            <td>{{s.age}}</td>
+            {% if s.image %}
+            <td>
+                <img src="{{s.image.url}}" width="100" height="100">
+            {% else %}
+                no image:
+            </td>
+            {% endif %}
+        </tr>
+        <td>
+            <a href="{% url 'update' s.id %}">EDIT</a>
+            <a href="{% url 'delete' s.id %}">DELETE</a>
+        </td>
+        {% endfor %}
+    </table>
+</body>
+</html>

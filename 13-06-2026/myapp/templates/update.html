@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Update System</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        name: <input type="text" name="name" value="{{students.name}}"><br><br>
+        email: <input type="text" name="email" value="{{students.email}}"><br><br>
+        age: <input type="number" name="age" value="{{students.age}}"><br><br>
+    
+        {% if students.image %}
+            <img src="{{students.image.url}}" width="100" height="100"><br><br>
+        {% endif %}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
